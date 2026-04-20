@@ -5,6 +5,12 @@ namespace App\Controllers;
 use App\Models\UsuarioModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
+/**
+ * Controlador de Autenticación
+ * 
+ * Maneja el login, registro y logout de usuarios
+ * Ejemplo de implementación basado en UsuarioModel mejorado
+ */
 class Auth extends BaseController
 {
     protected $usuarioModel;
@@ -15,13 +21,17 @@ class Auth extends BaseController
         $this->usuarioModel = model('UsuarioModel');
     }
 
+    // ========================================
+    // VISTAS
+    // ========================================
+
     /**
      * Mostrar formulario de login
      */
     public function login()
     {
         // Si ya está autenticado, redirigir al dashboard
-        if (session()->get('autenticado')) {
+        if (session()->get('usuario')) {
             return redirect()->to('/dashboard');
         }
 
@@ -29,8 +39,25 @@ class Auth extends BaseController
     }
 
     /**
+     * Mostrar formulario de registro
+     */
+    public function register()
+    {
+        // Si ya está autenticado, redirigir al dashboard
+        if (session()->get('usuario')) {
+            return redirect()->to('/dashboard');
+        }
+
+        return view('auth/register');
+    }
+
+    // ========================================
+    // PROCESAMIENTO DE LOGIN
+    // ========================================
+
+    /**
      * Procesar autenticación de login
-     * Usa el método validarLogin() del modelo
+     * POST /auth/authenticate
      */
     public function authenticate()
     {
@@ -39,23 +66,24 @@ class Auth extends BaseController
             return redirect()->to('/auth/login');
         }
 
+        // Obtener datos del formulario
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
+        $remember = $this->request->getPost('remember');
 
         // Validaciones básicas
         if (!$email || !$password) {
             return redirect()->back()
-                ->with('error', 'Email y contraseña son requeridos.')
-                ->withInput();
+                ->with('error', 'Email y contraseña son requeridos.');
         }
 
-        // Usar método del modelo para validar credenciales
+        // Validar credenciales usando el modelo
         $usuario = $this->usuarioModel->validarLogin($email, $password);
 
         if (!$usuario) {
             return redirect()->back()
-                ->with('error', 'Email/Usuario o contraseña incorrectos.')
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Email/Usuario o contraseña incorrectos.');
         }
 
         // Credenciales válidas - Crear sesión
@@ -72,29 +100,28 @@ class Auth extends BaseController
 
         session()->set($datosSession);
 
+        // Recordar usuario si marcó la opción (opcional)
+        if ($remember) {
+            // Aquí podrías guardar un token de recuerdo en cookies
+            // Por ahora solo prolongamos la sesión
+            session()->setTempdata('_remember', 1, 7 * 24 * 60 * 60);
+        }
+
         // Log de acceso (opcional)
         log_message('info', "Usuario {$usuario['username']} inició sesión");
 
+        // Redirigir al dashboard
         return redirect()->to('/dashboard')
             ->with('success', "Bienvenido {$usuario['nombre']}");
     }
 
-    /**
-     * Mostrar formulario de registro
-     */
-    public function register()
-    {
-        // Si ya está autenticado, redirigir al dashboard
-        if (session()->get('autenticado')) {
-            return redirect()->to('/dashboard');
-        }
-
-        return view('auth/register');
-    }
+    // ========================================
+    // PROCESAMIENTO DE REGISTRO
+    // ========================================
 
     /**
      * Procesar registro de nuevo usuario
-     * Usa el método registrarUsuario() del modelo
+     * POST /auth/store
      */
     public function store()
     {
@@ -113,7 +140,7 @@ class Auth extends BaseController
             'email'        => $this->request->getPost('email'),
             'password'     => $this->request->getPost('password'),
             'password_confirm' => $this->request->getPost('password_confirm'),
-            'id_rol'       => 1  // Rol 1 (Admin) por defecto
+            'id_rol'       => 2  // Rol de usuario regular por defecto
         ];
 
         // Validación adicional: confirmar contraseña
@@ -126,7 +153,7 @@ class Auth extends BaseController
         // Remover campo de confirmación antes de pasar al modelo
         unset($datos['password_confirm']);
 
-        // Registrar usuario usando el método del modelo
+        // Registrar usuario usando el modelo
         $idUsuario = $this->usuarioModel->registrarUsuario($datos);
 
         if ($idUsuario) {
@@ -137,7 +164,7 @@ class Auth extends BaseController
                 ->with('success', 'Registro exitoso. Por favor inicia sesión con tus credenciales.');
         }
 
-        // Registro fallido - obtener errores del modelo
+        // Registro fallido - obtener errores
         $errores = $this->usuarioModel->getErrores();
 
         return redirect()->back()
@@ -146,8 +173,13 @@ class Auth extends BaseController
             ->with('error', 'Ocurrió un error durante el registro. Revisa los campos.');
     }
 
+    // ========================================
+    // LOGOUT
+    // ========================================
+
     /**
      * Cerrar sesión
+     * GET /auth/logout
      */
     public function logout()
     {
@@ -163,5 +195,61 @@ class Auth extends BaseController
 
         return redirect()->to('/')
             ->with('success', 'Sesión cerrada correctamente.');
+    }
+
+    // ========================================
+    // MÉTODOS AUXILIARES
+    // ========================================
+
+    /**
+     * Verificar si el usuario está autenticado
+     * 
+     * @return bool
+     */
+    public function isAutenticado(): bool
+    {
+        return (bool) session()->get('autenticado');
+    }
+
+    /**
+     * Obtener usuario actual de la sesión
+     * 
+     * @return array|null
+     */
+    public function getUsuarioActual(): ?array
+    {
+        if (!$this->isAutenticado()) {
+            return null;
+        }
+
+        return [
+            'id_usuario' => session()->get('id_usuario'),
+            'nombre'     => session()->get('nombre'),
+            'email'      => session()->get('email'),
+            'username'   => session()->get('username'),
+            'id_rol'     => session()->get('id_rol'),
+            'rol_nombre' => session()->get('rol_nombre')
+        ];
+    }
+
+    /**
+     * Verificar si el usuario tiene un rol específico
+     * 
+     * @param string|int $rol Nombre o ID del rol
+     * @return bool
+     */
+    public function tieneRol($rol): bool
+    {
+        if (!$this->isAutenticado()) {
+            return false;
+        }
+
+        // Si es un número, comparar IDs
+        if (is_numeric($rol)) {
+            return session()->get('id_rol') == $rol;
+        }
+
+        // Si es string, comparar nombres
+        return session()->get('rol_nombre') === $rol;
     }
 }
