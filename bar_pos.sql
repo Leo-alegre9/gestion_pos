@@ -7,32 +7,34 @@
 --  1. roles
 -- ------------------------------------------------------------
 CREATE TABLE roles (
-    id_rol      INT           IDENTITY(1,1) PRIMARY KEY,
-    nombre      VARCHAR(50)   NOT NULL,
-    descripcion VARCHAR(255)  NULL,
-    CONSTRAINT uq_roles_nombre UNIQUE (nombre)
-);
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(255),
+    UNIQUE KEY uq_roles_nombre (nombre)
+) ENGINE=InnoDB;
 
 -- ------------------------------------------------------------
 --  2. usuarios
 -- ------------------------------------------------------------
 CREATE TABLE usuarios (
-    id_usuario     INT           IDENTITY(1,1) PRIMARY KEY,
-    id_rol         INT           NOT NULL,
-    nombre         VARCHAR(100)  NOT NULL,
-    apellido       VARCHAR(100)  NULL,
-    dni            INT           NULL,
-    f_nacimiento   DATE          NULL,
-    username       VARCHAR(50)   NOT NULL,
-    password_hash  VARCHAR(255)  NOT NULL,
-    email          VARCHAR(120)  NULL,
-    activo         BIT           NOT NULL DEFAULT 1,
-    fecha_creacion DATETIME      NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT uq_usuarios_username UNIQUE (username),
-    CONSTRAINT uq_usuarios_email    UNIQUE (email),
-    CONSTRAINT fk_usuarios_rol      FOREIGN KEY (id_rol)
-        REFERENCES roles (id_rol)
-);
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    id_rol INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100),
+    dni INT NOT NULL,
+    f_nacimiento DATE,
+    username VARCHAR(50) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(120),
+    activo TINYINT(1) NOT NULL DEFAULT 1,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uq_usuarios_username (username),
+    UNIQUE KEY uq_usuarios_email (email),
+
+    CONSTRAINT fk_usuarios_rol 
+        FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
+) ENGINE=InnoDB;
 
 -- ------------------------------------------------------------
 --  3. mesas
