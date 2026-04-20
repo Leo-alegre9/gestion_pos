@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Cuenta — Gestion_POS</title>
+  <title>Registrarse — Gestion_POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -66,6 +66,7 @@
         </div>
       <?php endif; ?>
 
+      <!-- Mostrar errores de validación -->
       <?php if (session()->has('errores')): ?>
         <div class="alert alert-error">
           <svg class="alert-icon" viewBox="0 0 24 24">
@@ -84,6 +85,7 @@
       <form action="/auth/store" method="POST" class="auth-form animate__animated animate__slideInUp animate__duration-600ms" style="animation-delay: 0.1s;">
         <?= csrf_field() ?>
 
+        <!-- Nombre y Apellido -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="form-group">
             <label for="nombre" class="form-label">Nombre *</label>
@@ -111,6 +113,7 @@
           </div>
         </div>
 
+        <!-- DNI y Fecha de Nacimiento -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="form-group">
             <label for="dni" class="form-label">DNI *</label>
@@ -137,6 +140,7 @@
           </div>
         </div>
 
+        <!-- Username -->
         <div class="form-group">
           <label for="username" class="form-label">Nombre de Usuario *</label>
           <input 
@@ -150,9 +154,10 @@
             maxlength="50"
             required
           >
-          <small class="form-hint">Mínimo 3 caracteres</small>
+          <small class="form-hint">Mínimo 3 caracteres, solo letras, números y guiones</small>
         </div>
 
+        <!-- Email -->
         <div class="form-group">
           <label for="email" class="form-label">Email *</label>
           <input 
@@ -164,8 +169,10 @@
             value="<?= old('email') ?>"
             required
           >
+          <small class="form-hint">Ej: juan@gestion-pos.com</small>
         </div>
 
+        <!-- Password y Confirmación -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="form-group">
             <label for="password" class="form-label">Contraseña *</label>
@@ -195,6 +202,7 @@
           </div>
         </div>
 
+        <!-- Términos -->
         <div class="form-checkbox">
           <input type="checkbox" id="terminos" name="terminos" required>
           <label for="terminos">Acepto los <a href="/terminos" target="_blank" class="link-primary">términos y condiciones</a></label>
@@ -207,7 +215,7 @@
         <span>o</span>
       </div>
 
-      <div class="auth-footer animate__animated animate__fadeIn animate__duration-700ms" style="animation-delay: 0.2s;">
+      <div class="auth-footer">
         <p>¿Ya tienes cuenta? <a href="/auth/login" class="link-primary">Inicia sesión aquí</a></p>
       </div>
     </div>
@@ -223,6 +231,19 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Validación de contraseña en el cliente (complementaria)
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('password_confirm').value;
+      
+      if (password !== passwordConfirm) {
+        e.preventDefault();
+        alert('Las contraseñas no coinciden');
+      }
+    });
+  </script>
 
 </body>
 </html>
