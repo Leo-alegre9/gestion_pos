@@ -21,8 +21,8 @@
         <a href="#features">Características</a>
         <a href="#pagos">Pagos</a>
         <a href="#contacto">Contacto</a>
-        <a href="#" class="btn-outline">Iniciar sesión</a>
-        <a href="#" class="btn-pill">Empezar gratis</a>
+        <a href="/auth/login" class="btn-outline">Iniciar sesión</a>
+        <a href="/auth/register" class="btn-pill">Empezar gratis</a>
       </div>
     </nav>
   </header>
@@ -32,7 +32,7 @@
     <h1>Gestiona tu bar<br>como un <strong>profesional</strong></h1>
     <p>Controlá mesas, pedidos, inventario y ventas desde una sola plataforma. Ideal para bares, pubs y restaurantes.</p>
     <div class="hero-ctas">
-      <a href="#" class="btn-pill btn-lg">Empezar gratis</a>
+      <a href="/auth/register" class="btn-pill btn-lg">Empezar gratis</a>
       <a href="#features" class="btn-outline btn-lg">Ver características</a>
     </div>
 
@@ -139,7 +139,7 @@
     <h2>¿Listo para ordenar?</h2>
     <p>Simplificá la gestión de tu bar. Controlá mesas, pedidos y stock desde un solo lugar.</p>
     <div class="cta-btns">
-      <a href="#" class="btn-pill btn-lg">Crear cuenta gratis</a>
+      <a href="/auth/register" class="btn-pill btn-lg">Crear cuenta gratis</a>
       <a href="#" class="btn-outline btn-lg">Hablar con ventas</a>
     </div>
   </section>
