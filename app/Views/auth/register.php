@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crear Cuenta — BarPOS</title>
+  <title>Crear Cuenta — Gestion_POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,8 +15,23 @@
   <header>
     <nav>
       <a href="/" class="logo">
-        <div class="logo-mark">B</div>
-        BarPOS
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sphereGradientRegister" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5b21b6;stop-opacity:1" />
+            </radialGradient>
+            <radialGradient id="sphereShineRegister" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+              <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0" />
+            </radialGradient>
+          </defs>
+          <circle cx="20" cy="20" r="18" fill="url(#sphereGradientRegister)" />
+          <circle cx="14" cy="12" r="8" fill="url(#sphereShineRegister)" />
+          <circle cx="20" cy="20" r="18" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.3" />
+        </svg>
+        <span class="logo-text">Gestion_POS</span>
       </a>
       <div class="nav-links">
         <a href="/" style="color: var(--text-secondary); font-size: 13px;">Volver a inicio</a>
@@ -28,7 +43,7 @@
     <div class="auth-box animate__animated animate__fadeIn animate__duration-700ms">
       <div class="auth-header animate__animated animate__slideInDown animate__duration-600ms">
         <h1>Crea tu cuenta</h1>
-        <p>Únete a BarPOS y gestiona tu bar profesionalmente</p>
+        <p>Únete a Gestion_POS y gestiona tu bar profesionalmente</p>
       </div>
 
       <?php if (session()->getFlashdata('error')): ?>
@@ -125,7 +140,7 @@
 
   <footer style="margin-top: 4rem;">
     <div class="footer-inner">
-      <div class="footer-copy">© 2025 BarPOS. Todos los derechos reservados.</div>
+      <div class="footer-copy">© 2025 Gestion_POS. Todos los derechos reservados.</div>
       <div class="footer-links">
         <a href="#">Términos</a>
         <a href="#">Privacidad</a>

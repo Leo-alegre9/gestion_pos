@@ -64,6 +64,22 @@ nav {
   color: var(--text-primary);
   font-weight: 500;
   font-size: 15px;
+  transition: opacity 0.15s;
+}
+
+.logo:hover {
+  opacity: 0.8;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .logo-mark {

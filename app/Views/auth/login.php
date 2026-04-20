@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión — BarPOS</title>
+  <title>Iniciar Sesión — Gestion_POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,8 +15,23 @@
   <header>
     <nav>
       <a href="/" class="logo">
-        <div class="logo-mark">B</div>
-        BarPOS
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sphereGradientLogin" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5b21b6;stop-opacity:1" />
+            </radialGradient>
+            <radialGradient id="sphereShineLogin" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+              <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0" />
+            </radialGradient>
+          </defs>
+          <circle cx="20" cy="20" r="18" fill="url(#sphereGradientLogin)" />
+          <circle cx="14" cy="12" r="8" fill="url(#sphereShineLogin)" />
+          <circle cx="20" cy="20" r="18" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.3" />
+        </svg>
+        <span class="logo-text">Gestion_POS</span>
       </a>
       <div class="nav-links">
         <a href="/" style="color: var(--text-secondary); font-size: 13px;">Volver a inicio</a>
@@ -28,7 +43,7 @@
     <div class="auth-box animate__animated animate__fadeIn animate__duration-700ms">
       <div class="auth-header animate__animated animate__slideInDown animate__duration-600ms">
         <h1>Bienvenido de nuevo</h1>
-        <p>Inicia sesión para acceder a tu cuenta de BarPOS</p>
+        <p>Inicia sesión para acceder a tu cuenta de Gestion_POS</p>
       </div>
 
       <?php if (session()->getFlashdata('error')): ?>
@@ -61,11 +76,11 @@
             id="email" 
             name="email" 
             class="form-input" 
-            placeholder="admin@barpos.com"
+            placeholder="admin@gestion-pos.com"
             value="<?= old('email') ?>"
             required
           >
-          <small class="form-hint">Ej: admin@barpos.com</small>
+          <small class="form-hint">Ej: admin@gestion-pos.com</small>
         </div>
 
         <div class="form-group">
@@ -102,7 +117,7 @@
       <div class="auth-credentials animate__animated animate__fadeIn animate__duration-700ms" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; animation-delay: 0.2s;">
         <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.75rem;">Credenciales de demo:</p>
         <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-md); font-family: 'DM Mono', monospace; font-size: 12px;">
-          <div><strong>Email:</strong> admin@barpos.com</div>
+          <div><strong>Email:</strong> admin@gestion-pos.com</div>
           <div><strong>Contraseña:</strong> 123456</div>
         </div>
       </div>
@@ -111,7 +126,7 @@
 
   <footer style="margin-top: 4rem;">
     <div class="footer-inner">
-      <div class="footer-copy">© 2025 BarPOS. Todos los derechos reservados.</div>
+      <div class="footer-copy">© 2025 Gestion_POS. Todos los derechos reservados.</div>
       <div class="footer-links">
         <a href="#">Términos</a>
         <a href="#">Privacidad</a>

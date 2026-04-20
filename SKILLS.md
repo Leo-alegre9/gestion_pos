@@ -1,5 +1,7 @@
 # SKILLS.md — Sistema POS para Bar
 
+Nombre del proyecto: Gestion_POS (para considerar en los documentos que edites)
+
 ## 🎯 Propósito del proyecto
 
 Desarrollar un sistema POS (Point of Sale) para un bar con una sola sucursal, enfocado en:

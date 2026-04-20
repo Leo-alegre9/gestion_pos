@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BarPOS — Sistema de Gestión para Bar</title>
+  <title>Gestion_POS — Sistema de Gestión para Bar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,8 +14,23 @@
   <header>
     <nav>
       <a href="#" class="logo">
-        <div class="logo-mark">B</div>
-        Gestion_POS
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sphereGradientHeader" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5b21b6;stop-opacity:1" />
+            </radialGradient>
+            <radialGradient id="sphereShineHeader" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+              <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0" />
+            </radialGradient>
+          </defs>
+          <circle cx="20" cy="20" r="18" fill="url(#sphereGradientHeader)" />
+          <circle cx="14" cy="12" r="8" fill="url(#sphereShineHeader)" />
+          <circle cx="20" cy="20" r="18" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.3" />
+        </svg>
+        <span class="logo-text">Gestion_POS</span>
       </a>
       <div class="nav-links">
         <a href="#features">Características</a>
@@ -140,22 +155,37 @@
     <p>Simplificá la gestión de tu bar. Controlá mesas, pedidos y stock desde un solo lugar.</p>
     <div class="cta-btns">
       <a href="/auth/register" class="btn-pill btn-lg">Crear cuenta gratis</a>
-      <a href="#" class="btn-outline btn-lg">Hablar con ventas</a>
+      <a href="https://wa.me/5493781401440" class="btn-outline btn-lg">Hablar con ventas</a>
     </div>
   </section>
 
   <footer>
     <div class="footer-inner">
       <div class="logo">
-        <div class="logo-mark" style="width:22px;height:22px;font-size:11px;">B</div>
-        BarPOS
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sphereGradientFooter" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5b21b6;stop-opacity:1" />
+            </radialGradient>
+            <radialGradient id="sphereShineFooter" cx="35%" cy="35%">
+              <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6" />
+              <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0" />
+            </radialGradient>
+          </defs>
+          <circle cx="20" cy="20" r="18" fill="url(#sphereGradientFooter)" />
+          <circle cx="14" cy="12" r="8" fill="url(#sphereShineFooter)" />
+          <circle cx="20" cy="20" r="18" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.3" />
+        </svg>
+        <span class="logo-text">Gestion_POS</span>
       </div>
       <div class="footer-links">
-        <a href="#">Términos</a>
-        <a href="#">Privacidad</a>
-        <a href="#">Ayuda</a>
+        <a href="/terminos">Términos</a>
+        <a href="/privacidad">Privacidad</a>
+        <a href="https://wa.me/5493781401440" target="_blank">Ayuda</a>
       </div>
-      <div class="footer-copy">© 2025 BarPOS. Todos los derechos reservados.</div>
+      <div class="footer-copy">© 2025 Gestion_POS. Todos los derechos reservados.</div>
     </div>
   </footer>
 
