@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GestionPOS - Sistema de Gestión de Punto de Venta</title>
+    <title>BarPOS - Sistema de Gestión para Bar</title>
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,13 +45,13 @@
             gap: 0.5rem;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #2563eb;
+            color: #7c3aed;
             text-decoration: none;
         }
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -71,10 +71,10 @@
             transition: color 0.2s;
         }
         .nav-links a:hover {
-            color: #2563eb;
+            color: #7c3aed;
         }
         .btn-primary {
-            background: #2563eb;
+            background: #7c3aed;
             color: white;
             padding: 0.625rem 1.25rem;
             border-radius: 8px;
@@ -83,11 +83,11 @@
             transition: background 0.2s;
         }
         .btn-primary:hover {
-            background: #1d4ed8;
+            background: #6d28d9;
         }
         .hero {
             margin-top: 72px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%);
             padding: 6rem 2rem;
             text-align: center;
             color: white;
@@ -162,13 +162,13 @@
         .feature-icon {
             width: 48px;
             height: 48px;
-            background: #eff6ff;
+            background: #f5f3ff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1.5rem;
-            color: #2563eb;
+            color: #7c3aed;
             font-size: 1.5rem;
         }
         .feature-card h3 {
@@ -180,7 +180,7 @@
             color: #6b7280;
         }
         .stats {
-            background: #1e3a8a;
+            background: #581c87;
             padding: 4rem 2rem;
         }
         .stats-container {
@@ -285,8 +285,8 @@
     <header>
         <nav>
             <a href="#" class="logo">
-                <div class="logo-icon">P</div>
-                GestionPOS
+                <div class="logo-icon">B</div>
+                BarPOS
             </a>
             <div class="nav-links">
                 <a href="#features">Características</a>
@@ -299,8 +299,8 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>Gestiona tu negocio de forma inteligente</h1>
-            <p>Optimiza tus ventas, controla tu inventario y grows tu negocio con nuestro sistema integral de punto de venta. Potenciado con CodeIgniter 4.</p>
+            <h1>Gestiona tu bar como un profesional</h1>
+            <p>Controla mesas, pedidos, inventario y ventas desde una sola plataforma. Ideal para bares, pubs y restaurantes. Potenciado con CodeIgniter 4.</p>
             <div class="hero-buttons">
                 <a href="#" class="btn-primary">Empezar Ahora</a>
                 <a href="#features" class="btn-secondary">Ver Características</a>
@@ -310,39 +310,39 @@
 
     <section class="features" id="features">
         <div class="section-title">
-            <h2>Todo lo que necesitas</h2>
-            <p>Herramientas completas para gestionar tu negocio eficientemente</p>
+            <h2>Todo para tu bar</h2>
+            <p>Gestiona cada aspecto de tu bar desde una sola plataforma</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>Gestión de Ventas</h3>
-                <p>Registra ventas de forma rápida y sencilla con soporte para múltiples métodos de pago y generación de facturas.</p>
+                <div class="feature-icon">🍺</div>
+                <h3>Gestión de Mesas</h3>
+                <p>Controla el estado de cada mesa en tiempo real: libre, ocupada, reservada o inactiva. Asigna pedidos directamente a cada mesa.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Pedidos por Mesa, Barra o Take Away</h3>
+                <p>Crea pedidos desde el mostrador, desde una mesa específica o para llevar. El sistema registra todo automáticamente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🍸</div>
+                <h3>Catálogo de Productos</h3>
+                <p>Gestiona tragos, cervezas, comidas y postres. Organiza por categorías y controla disponibilidad en tiempo real.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📦</div>
-                <h3>Control de Inventario</h3>
-                <p>Mantén el control de tu stock en tiempo real con alertas automáticas y gestión de productos.</p>
+                <h3>Control de Stock</h3>
+                <p>Lleva el inventario de bebidas y productos. Alertas automáticas cuando el stock está bajo. Entradas y salidas registradas.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h3>Múltiples Métodos de Pago</h3>
+                <p>Acepta efectivo, tarjetas de débito, crédito y transferencias. Registra pagos combinados en un solo pedido.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
                 <h3>Reportes y Analytics</h3>
-                <p>Visualiza el rendimiento de tu negocio con gráficos detallados y reportes personalizables.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>Gestión de Clientes</h3>
-                <p>Administra tu base de clientes con historial de compras, preferencias y datos de contacto.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏪</div>
-                <h3>Multi-sucursal</h3>
-                <p>Gestiona varias ubicaciones desde un solo panel, con inventario centralizado y reportes por tienda.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Acceso Web</h3>
-                <p>Accede a tu sistema desde cualquier dispositivo con conexión a internet. No necesitas instalar nada.</p>
+                <p>Visualiza ventas diarias, productos más vendidos, rotación de mesas y más. Todo lo que necesitas saber.</p>
             </div>
         </div>
     </section>
@@ -350,16 +350,16 @@
     <section class="stats" id="stats">
         <div class="stats-container">
             <div class="stat-item">
-                <div class="stat-number">10K+</div>
-                <div class="stat-label">Usuarios Activos</div>
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Pedidos/Día</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">50K+</div>
-                <div class="stat-label">Ventas Diarias</div>
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Mesas Soportadas</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">99.9%</div>
-                <div class="stat-label">Disponibilidad</div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Tiempo Real</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">24/7</div>
@@ -370,8 +370,8 @@
 
     <section class="cta" id="contact">
         <div class="cta-content">
-            <h2>Listo para empezar?</h2>
-            <p>Únete a miles de negocios que ya están creciendo con GestionPOS. Comienza tu prueba gratuita hoy.</p>
+            <h2>Listo para ordenar?</h2>
+            <p>Simplifica la gestión de tu bar. Controla mesas, pedidos y stock desde un solo lugar. Pruébalo gratis.</p>
             <a href="#" class="btn-primary">Crear Cuenta Gratis</a>
         </div>
     </section>
@@ -379,8 +379,8 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <div class="logo-icon">P</div>
-                GestionPOS
+                <div class="logo-icon">B</div>
+                BarPOS
             </div>
             <div class="footer-links">
                 <a href="#">Términos</a>
@@ -388,7 +388,7 @@
                 <a href="#">Ayuda</a>
             </div>
             <div class="footer-copy">
-                © 2025 GestionPOS. Todos los derechos reservados.
+                © 2025 BarPOS. Todos los derechos reservados.
             </div>
         </div>
     </footer>
