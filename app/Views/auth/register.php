@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -24,8 +25,8 @@
   </header>
 
   <section class="auth-container">
-    <div class="auth-box">
-      <div class="auth-header">
+    <div class="auth-box animate__animated animate__fadeIn animate__duration-700ms">
+      <div class="auth-header animate__animated animate__slideInDown animate__duration-600ms">
         <h1>Crea tu cuenta</h1>
         <p>Únete a BarPOS y gestiona tu bar profesionalmente</p>
       </div>
@@ -50,7 +51,7 @@
         </div>
       <?php endif; ?>
 
-      <form action="/auth/store-register" method="POST" class="auth-form">
+      <form action="/auth/store-register" method="POST" class="auth-form animate__animated animate__slideInUp animate__duration-600ms" style="animation-delay: 0.1s;">
         <?= csrf_field() ?>
 
         <div class="form-group">
@@ -116,40 +117,8 @@
         <span>o</span>
       </div>
 
-      <div class="auth-footer">
+      <div class="auth-footer animate__animated animate__fadeIn animate__duration-700ms" style="animation-delay: 0.2s;">
         <p>¿Ya tienes cuenta? <a href="/auth/login" class="link-primary">Inicia sesión aquí</a></p>
-      </div>
-    </div>
-
-    <div class="auth-side">
-      <div class="auth-side-content">
-        <h2>Únete a cientos de bares</h2>
-        <ul class="auth-features">
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Prueba gratis por 14 días</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Sin necesidad de tarjeta</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Soporte técnico 24/7</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Integración con sistemas POS</span>
-          </li>
-        </ul>
       </div>
     </div>
   </section>

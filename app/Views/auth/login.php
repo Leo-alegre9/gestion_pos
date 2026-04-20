@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -24,8 +25,8 @@
   </header>
 
   <section class="auth-container">
-    <div class="auth-box">
-      <div class="auth-header">
+    <div class="auth-box animate__animated animate__fadeIn animate__duration-700ms">
+      <div class="auth-header animate__animated animate__slideInDown animate__duration-600ms">
         <h1>Bienvenido de nuevo</h1>
         <p>Inicia sesión para acceder a tu cuenta de BarPOS</p>
       </div>
@@ -50,7 +51,7 @@
         </div>
       <?php endif; ?>
 
-      <form action="/auth/authenticate" method="POST" class="auth-form">
+      <form action="/auth/authenticate" method="POST" class="auth-form animate__animated animate__slideInUp animate__duration-600ms" style="animation-delay: 0.1s;">
         <?= csrf_field() ?>
 
         <div class="form-group">
@@ -98,44 +99,12 @@
         <p><a href="#" class="link-secondary">¿Olvidaste tu contraseña?</a></p>
       </div>
 
-      <div class="auth-credentials" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center;">
+      <div class="auth-credentials animate__animated animate__fadeIn animate__duration-700ms" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; animation-delay: 0.2s;">
         <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.75rem;">Credenciales de demo:</p>
         <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-md); font-family: 'DM Mono', monospace; font-size: 12px;">
           <div><strong>Email:</strong> admin@barpos.com</div>
           <div><strong>Contraseña:</strong> 123456</div>
         </div>
-      </div>
-    </div>
-
-    <div class="auth-side">
-      <div class="auth-side-content">
-        <h2>Gestiona tu bar sin complicaciones</h2>
-        <ul class="auth-features">
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Controla mesas en tiempo real</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Gestiona pedidos y ventas</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Inventario automático</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" class="feature-check">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            <span>Reportes detallados</span>
-          </li>
-        </ul>
       </div>
     </div>
   </section>
