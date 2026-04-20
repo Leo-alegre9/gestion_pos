@@ -1,69 +1,402 @@
-# CodeIgniter 4 Application Starter
+# 🍺 BarPOS - Sistema de Gestión para Bares
 
-## What is CodeIgniter?
+Sistema POS (Point of Sale) minimalista y confiable para la gestión operativa de bares, desarrollado con **CodeIgniter 4**.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## 📋 Contenido
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- [Características](#características)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Instalación](#instalación)
+- [Estructura de Carpetas](#estructura-de-carpetas)
+- [Archivos Generados](#archivos-generados)
+- [Rutas Disponibles](#rutas-disponibles)
+- [Credenciales de Prueba](#credenciales-de-prueba)
+- [Próximos Pasos](#próximos-pasos)
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+---
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## 🎯 Características
 
-## Installation & updates
+✅ **Login/Logout** - Autenticación con sesiones (hardcodeado temporalmente)  
+✅ **Dashboard** - Panel principal con estadísticas en tiempo real  
+✅ **Gestión de Mesas** - Control visual del estado de mesas  
+✅ **Toma de Pedidos** - Interfaz rápida y eficiente  
+✅ **Sistema de Caja** - Registro de pagos y cierre de caja  
+✅ **Control de Stock** - Monitoreo de productos  
+✅ **Roles y Permisos** - Admin y Staff (para cuando se conecte a BD)  
+✅ **Diseño Responsivo** - Optimizado para pantallas táctiles  
+✅ **Documentación Inline** - Comentarios explicativos en todo el código  
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+---
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## 🛠️ Stack Tecnológico
 
-## Setup
+```
+Backend:
+- Framework: CodeIgniter 4 (PHP 8+)
+- Lenguaje: PHP 8.0+
+- Base de datos: MariaDB (XAMPP)
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Frontend:
+- HTML5 / CSS3
+- Bootstrap 5
+- Animate.css
+- Font Awesome 6
+- JavaScript Vanilla (no dependencies)
 
-## Important Change with index.php
+Herramientas:
+- XAMPP (Local development)
+- Composer (Dependency manager)
+- Git (Version control)
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+---
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+## 📦 Instalación
 
-**Please** read the user guide for a better explanation of how CI4 works!
+### 1. **Clonar o descargar el repositorio**
 
-## Repository Management
+```bash
+git clone <repository-url>
+cd barpos-pos
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+### 2. **Instalar dependencias**
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```bash
+composer install
+```
 
-## Server Requirements
+### 3. **Configurar el archivo .env**
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+Copiar `.env.example` a `.env` y configurar:
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+```env
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost:8080/'
+database.default.hostname = localhost
+database.default.database = barpos_db
+database.default.username = root
+database.default.password = ''
+```
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+### 4. **Configurar sesiones**
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+En `app/Config/Session.php`:
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+```php
+public $driver            = 'files'; // O 'database' si se prefiere
+public $cookieName        = 'BARPOS_SESSION';
+public $expiration        = 7200; // 2 horas
+public $savePath          = WRITEPATH . 'session';
+```
+
+### 5. **Ejecutar servidor local**
+
+```bash
+php spark serve
+```
+
+Acceder a: `http://localhost:8080/login`
+
+---
+
+## 📁 Estructura de Carpetas
+
+```
+barpos/
+├── app/
+│   ├── Config/
+│   │   └── Routes.php              ← Rutas definidas
+│   ├── Controllers/
+│   │   ├── Auth.php                ← Login/Logout
+│   │   └── Dashboard.php           ← Panel principal
+│   ├── Models/                     ← (Próximamente)
+│   ├── Views/
+│   │   ├── auth/
+│   │   │   └── login.php           ← Formulario login
+│   │   ├── dashboard/
+│   │   │   └── index.php           ← Panel principal
+│   │   └── layouts/
+│   │       └── dashboard.php       ← Layout base
+│   ├── css/
+│   │   └── dashboard.css           ← Estilos globales
+│   └── js/
+│       └── dashboard.js            ← Scripts globales
+├── public/
+│   ├── css/                        ← Estilos estáticos
+│   ├── js/                         ← Scripts estáticos
+│   └── images/                     ← Imágenes
+├── .env                            ← Configuración del proyecto
+├── .gitignore
+├── composer.json
+└── README.md
+```
+
+---
+
+## 📄 Archivos Generados
+
+### Controllers
+
+#### `Auth.php` (Autenticación)
+- `login()` - Muestra formulario de login
+- `processLogin()` - Procesa credenciales (POST)
+- `logout()` - Cierra sesión
+
+**Datos hardcodeados:**
+```
+admin@bar.local / password123     (Admin)
+mozo@bar.local / password123      (Staff)
+```
+
+#### `Dashboard.php` (Panel Principal)
+- `index()` - Dashboard con estadísticas
+- `getMesaStatus($id)` - API para estado de mesas
+
+### Views
+
+#### `auth/login.php`
+- Formulario elegante con validación client-side
+- Diseño responsivo y moderno
+- Animaciones con Animate.css
+
+#### `dashboard/index.php`
+- Panel con KPIs (estadísticas)
+- Grid de mesas con estados
+- Tabla de últimas órdenes
+- Panel de stock bajo
+- **100% funcional** (datos hardcodeados)
+
+#### `layouts/dashboard.php`
+- Layout base para todas las vistas post-login
+- Sidebar navegación con menú
+- Topbar con usuario, notificaciones, reloj
+- Footer
+- Scripts globales
+
+### Estilos y Scripts
+
+#### `css/dashboard.css` (1000+ líneas)
+- Variables CSS para tema consistente
+- Sidebar con animaciones
+- Responsive design (mobile, tablet, desktop)
+- Componentes: cards, badges, tables, forms
+- Paleta de colores: marrón, oro, crema
+
+#### `js/dashboard.js` (600+ líneas)
+- Objeto global `BarPOS` con utilidades
+- Funciones API ready (sin implementar)
+- Validación de formularios
+- Notificaciones
+- Manejo de eventos globales
+- Funciones específicas para mesas, pedidos, stock
+
+### Rutas
+
+#### `Config/Routes.php`
+```
+POST   /login/process              ← Procesar login
+GET    /logout                     ← Cerrar sesión
+GET    /dashboard                  ← Panel principal
+GET    /mesas                      ← Listado de mesas
+GET    /pedidos                    ← Listado de pedidos
+GET    /caja                       ← Panel de caja
+GET    /productos                  ← Catálogo de productos
+GET    /stock                      ← Control de stock
+GET    /usuarios                   ← Gestión de usuarios (admin)
+GET    /reportes                   ← Reportes (admin)
+GET    /configuracion              ← Configuración (admin)
+```
+
+---
+
+## 🔐 Credenciales de Prueba
+
+**Administrador:**
+- Email: `admin@bar.local`
+- Contraseña: `password123`
+
+**Personal:**
+- Email: `mozo@bar.local`
+- Contraseña: `password123`
+
+---
+
+## 🔄 Próximos Pasos (Conectar a Base de Datos)
+
+### 1. Crear Migraciones
+
+```bash
+php spark make:migration CreateUsersTable
+php spark make:migration CreateMesasTable
+php spark make:migration CreateProductosTable
+php spark make:migration CreatePedidosTable
+```
+
+### 2. Crear Modelos
+
+```bash
+php spark make:model User
+php spark make:model Mesa
+php spark make:model Producto
+php spark make:model Pedido
+```
+
+### 3. Crear Seeders
+
+```bash
+php spark make:seeder UserSeeder
+php spark make:seeder MesaSeeder
+php spark make:seeder ProductoSeeder
+```
+
+### 4. Ejemplo de Migración
+
+```php
+// app/Database/Migrations/2024-01-01-000001_CreateUsersTable.php
+
+class CreateUsersTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->createTable('users', function(ColumnDefinition $table) {
+            $table->increments('id');
+            $table->string('email', 255)->unique();
+            $table->string('password', 255);
+            $table->string('name', 100);
+            $table->enum('role', ['admin', 'staff']);
+            $table->enum('status', ['active', 'inactive']);
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('users');
+    }
+}
+```
+
+### 5. Reemplazar datos hardcodeados en Controllers
+
+```php
+// Antes (hardcodeado)
+$users = [
+    ['id' => 1, 'email' => 'admin@bar.local', ...]
+];
+
+// Después (con BD)
+$userModel = new UserModel();
+$user = $userModel->where('email', $email)->first();
+```
+
+---
+
+## 🎨 Personalización de Colores
+
+Editar variables en `css/dashboard.css`:
+
+```css
+:root {
+    --primary-color: #2c1810;        /* Marrón oscuro */
+    --secondary-color: #d4a574;      /* Oro/Bronce */
+    --accent-color: #e8d5b7;         /* Crema */
+    --success-color: #4ecdc4;        /* Verde agua */
+    --danger-color: #ff6b6b;         /* Rojo */
+    --warning-color: #ffa500;        /* Naranja */
+    --info-color: #3b82f6;           /* Azul */
+}
+```
+
+---
+
+## 📱 Responsive Design
+
+- ✅ **Desktop** (1920px+) - Grid completo
+- ✅ **Tablet** (768px - 1024px) - Sidebar colapsable
+- ✅ **Mobile** (320px - 767px) - Menú hamburguesa
+
+---
+
+## 🔍 Documentación del Código
+
+Cada función incluye comentarios con:
+- **Descripción** de qué hace
+- **Parámetros** esperados
+- **Retorno** esperado
+- **Ejemplo** de uso (en algunos casos)
+
+Ejemplo:
+
+```php
+/**
+ * Procesa el login del usuario
+ * 
+ * POST /login/process
+ * 
+ * Validaciones:
+ * - Email requerido
+ * - Contraseña requerida
+ * 
+ * @return \CodeIgniter\HTTP\RedirectResponse
+ */
+public function processLogin() { ... }
+```
+
+---
+
+## 🚀 Deployment a Hosting
+
+1. **Configurar .env para producción**
+   ```
+   CI_ENVIRONMENT = production
+   app.baseURL = 'https://tudominio.com/'
+   ```
+
+2. **Crear base de datos en el hosting**
+
+3. **Ejecutar migraciones**
+   ```bash
+   php spark migrate
+   ```
+
+4. **Cargar seeders iniciales**
+   ```bash
+   php spark db:seed UserSeeder
+   ```
+
+5. **Asegurar carpetas**
+   - `writable/` - Permisos 755
+   - `.env` - No compartir públicamente
+
+---
+
+## 📞 Soporte
+
+Para preguntas sobre la arquitectura o instalación, consulta la documentación oficial de [CodeIgniter 4](https://codeigniter.com/user_guide/intro/index.html).
+
+---
+
+## 📝 Licencia
+
+Este proyecto está bajo licencia MIT. Libre para usar y modificar.
+
+---
+
+## ✨ Características Futuras
+
+- [ ] Conexión real a MariaDB
+- [ ] WebSockets para actualizaciones en tiempo real
+- [ ] Exportación de reportes (PDF, Excel)
+- [ ] Integración con impresoras térmicas
+- [ ] App móvil nativa (React Native)
+- [ ] Sincronización multi-dispositivo
+- [ ] Sistema de notificaciones push
+- [ ] Backup automático de datos
+
+---
+
+**¡Listo para comenzar! 🎉**
+
+Accede a `http://localhost:8080/login` con las credenciales de prueba.
