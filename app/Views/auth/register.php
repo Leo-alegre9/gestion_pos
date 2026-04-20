@@ -142,9 +142,9 @@
     <div class="footer-inner">
       <div class="footer-copy">© 2025 Gestion_POS. Todos los derechos reservados.</div>
       <div class="footer-links">
-        <a href="#">Términos</a>
-        <a href="#">Privacidad</a>
-        <a href="#">Ayuda</a>
+        <a href="/terminos">Términos</a>
+        <a href="/privacidad">Privacidad</a>
+        <a href="https://wa.me/5493781401440" target="_blank">Ayuda</a>
       </div>
     </div>
   </footer>
