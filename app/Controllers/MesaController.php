@@ -43,9 +43,8 @@ class MesaController extends BaseController
             'mesas'   => $mesas,
             'resumen' => $resumen,
             'user'    => [
-                // Estos atributos de sesión deben ser seteados durante Auth::authenticate()
-                'name' => session('user_name') ?? session('nombre') ?? 'Administrador',
-                'role' => session('user_role') ?? session('rol') ?? 'Admin',
+                'name' => session('nombre') ?? 'Administrador',
+                'role' => session('rol_nombre') ?? 'Admin',
             ]
         ]);
     }
@@ -97,8 +96,8 @@ class MesaController extends BaseController
         return view('mesas_crear', [
             'proximoNumero' => $proximoNumero,
             'user' => [
-                'name' => session('user_name') ?? session('nombre') ?? 'Administrador',
-                'role' => session('user_role') ?? session('rol') ?? 'Admin',
+                'name' => session('nombre') ?? 'Administrador',
+                'role' => session('rol_nombre') ?? 'Admin',
             ]
         ]);
     }
