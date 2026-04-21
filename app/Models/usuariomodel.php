@@ -129,22 +129,16 @@ class UsuarioModel extends Model
      */
     public function registrarUsuario(array $datos)
     {
-        log_message('info', 'Iniciando registro de usuario: ' . json_encode($datos));
-
         // Validar que la contraseña esté presente
         if (!isset($datos['password']) || empty($datos['password'])) {
             $this->errors['password'] = 'La contraseña es obligatoria.';
-            log_message('error', 'Registro fallido: contraseña vacía');
             return false;
         }
 
-        // VALIDAR DATOS ANTES DE PROCESAR (mientras aún existen los campos originales)
+        // VALIDAR DATOS ANTES DE PROCESAR
         if (!$this->validate($datos)) {
-            log_message('error', 'Validación fallida: ' . json_encode($this->errors));
             return false;
         }
-
-        log_message('info', 'Validación exitosa');
 
         // Extraer password y hacer trim de campos string
         $password = trim($datos['password']);
@@ -163,27 +157,27 @@ class UsuarioModel extends Model
             'fecha_creacion' => date('Y-m-d H:i:s')
         ];
 
-        log_message('info', 'Datos preparados para insert: ' . json_encode([
-            'nombre' => $datosFinales['nombre'],
-            'email' => $datosFinales['email'],
-            'username' => $datosFinales['username'],
-            'dni' => $datosFinales['dni']
-        ]));
-
         // Insertar usuario
-        $resultado = $this->insert($datosFinales);
-        
-        if ($resultado) {
+        try {
+            $resultado = $this->insert($datosFinales, false);
+            
+            if ($resultado === false) {
+                $error = $this->db->error();
+                $mensajeError = $error['message'] ?? 'Error desconocido en la BD';
+                $this->errors['database'] = $mensajeError;
+                log_message('error', "Error al insertar usuario: {$mensajeError}");
+                return false;
+            }
+            
             $idUsuario = $this->insertID();
-            log_message('info', "Usuario registrado exitosamente con ID: {$idUsuario}");
+            log_message('error', "Usuario registrado: ID={$idUsuario}");
             return $idUsuario;
+            
+        } catch (\Exception $e) {
+            $this->errors['database'] = 'Error en la base de datos: ' . $e->getMessage();
+            log_message('error', 'Excepción en registro: ' . $e->getMessage());
+            return false;
         }
-
-        $error = $this->db->error();
-        log_message('error', 'Error en insert: ' . json_encode($error));
-        $this->errors['database'] = 'Error al guardar en la base de datos';
-        
-        return false;
     }
 
     // ========================================

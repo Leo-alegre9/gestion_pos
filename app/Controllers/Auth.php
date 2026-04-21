@@ -139,12 +139,14 @@ class Auth extends BaseController
 
         // Registro fallido - obtener errores del modelo
         $errores = $this->usuarioModel->getErrores();
-        log_message('error', "Fallo en registro de {$datos['username']}: " . json_encode($errores));
-
+        
+        if (empty($errores)) {
+            $errores[] = 'Error desconocido en el registro. Verifica los datos.';
+        }
+        
         return redirect()->back()
             ->withInput()
-            ->with('errores', $errores)
-            ->with('error', 'Ocurrió un error durante el registro. Revisa los campos.');
+            ->with('errores', $errores);
     }
 
     /**
