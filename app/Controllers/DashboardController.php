@@ -3,57 +3,68 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\MesaModel;
 
 class DashboardController extends BaseController
 {
     /**
-     * Muestra el dashboard principal.
-     * Todos los datos están hardcodeados por ahora.
+     * Muestra el Dashboard principal del sistema.
+     * Carga información real de mesas y simula los datos de pedidos por ahora,
+     * hasta que se implementen por completo los demás modelos (pedidos, productos).
      */
     public function index()
     {
-        // ── Usuario en sesión ──────────────────────────────────────────────
+        $mesaModel = new MesaModel();
+
+        // 1. Obtener los datos del usuario logueado en la sesión
         $user = [
             'name' => session()->get('user_name') ?? 'Administrador',
             'role' => session()->get('user_role') ?? 'Admin',
         ];
 
-        // ── KPIs y stats generales ─────────────────────────────────────────
+        // 2. Traer las mesas reales registradas en base de datos.
+        // Se ordena por el número de mesa ascendente.
+        $mesas = $mesaModel->orderBy('numero', 'ASC')->findAll();
+
+        // 3. Transformar para el uso específico de la vista de dashboard
+        $tables = [];
+        $mesasOcupadas = 0;
+
+        foreach ($mesas as $mesa) {
+            if (($mesa['estado'] ?? '') === 'ocupada') {
+                $mesasOcupadas++;
+            }
+
+            $tables[] = [
+                'id_mesa' => $mesa['id_mesa'],
+                'number'  => $mesa['numero'],
+                'status'  => $mesa['estado'],
+                // TODO: Conectar más adelante con la tabla 'pedidos' para traer el importe total de la mesa.
+                'amount'  => null, 
+            ];
+        }
+
+        // 4. Estadísticas del día (KPIs). 
+        // Algunas se obtienen de las tablas (mesas) y otras por ahora son de prueba hasta su implementación.
         $stats = [
-            'ventas_hoy'     => 124500,
-            'pedidos_hoy'    => 37,
-            'mesas_ocupadas' => 4,
-            'mesas_total'    => 8,
-            'alertas_stock'  => 3,
+            'ventas_hoy'     => 124500, // Hardcoded: Reemplazar por SUM(pagos.monto) WHERE fecha = hoy
+            'pedidos_hoy'    => 37,     // Hardcoded: Reemplazar por COUNT(id_pedido) WHERE fecha = hoy
+            'mesas_ocupadas' => $mesasOcupadas, // Dato Real de la DB
+            'mesas_total'    => count($mesas),  // Dato Real de la DB
+            'alertas_stock'  => 3,      // Hardcoded: Reemplazar por COUNT de productos bajos en stock
 
-            // Ventas por día (L-D). El último valor = hoy (en curso)
-            'week_sales' => [85000, 110000, 92000, 135000, 78000, 124500, 0],
+            'week_sales' => [85000, 110000, 92000, 135000, 78000, 124500, 0], // Dejar como historial simulado
 
-            // Top 5 productos más vendidos hoy
-            'top_products' => [
-                ['name' => 'Cerveza Quilmes 1L',   'qty' => 42],
-                ['name' => 'Fernet con Coca',       'qty' => 31],
-                ['name' => 'Papas fritas',           'qty' => 28],
-                ['name' => 'Hamburguesa clásica',   'qty' => 19],
-                ['name' => 'Agua mineral 500ml',    'qty' => 15],
+            'top_products' => [ // Produtos más vendidos
+                ['name' => 'Cerveza Quilmes 1L', 'qty' => 42],
+                ['name' => 'Fernet con Coca', 'qty' => 31],
+                ['name' => 'Papas fritas', 'qty' => 28],
+                ['name' => 'Hamburguesa clásica', 'qty' => 19],
+                ['name' => 'Agua mineral 500ml', 'qty' => 15],
             ],
         ];
 
-        // ── Estado de mesas ────────────────────────────────────────────────
-        // status: libre | ocupada | reservada | inactiva
-        $tables = [
-            ['number' => 1, 'status' => 'ocupada',   'amount' => 8500],
-            ['number' => 2, 'status' => 'libre',      'amount' => null],
-            ['number' => 3, 'status' => 'reservada',  'amount' => null],
-            ['number' => 4, 'status' => 'ocupada',    'amount' => 12300],
-            ['number' => 5, 'status' => 'libre',      'amount' => null],
-            ['number' => 6, 'status' => 'ocupada',    'amount' => 4200],
-            ['number' => 7, 'status' => 'inactiva',   'amount' => null],
-            ['number' => 8, 'status' => 'ocupada',    'amount' => 6800],
-        ];
-
-        // ── Pedidos recientes ──────────────────────────────────────────────
-        // status_class: open | paid | pending | canceled
+        // Pedidos recientes
         $recent_orders = [
             [
                 'id'           => 1047,
@@ -79,52 +90,18 @@ class DashboardController extends BaseController
                 'status_label' => 'Pagado',
                 'total'        => 3200,
             ],
-            [
-                'id'           => 1044,
-                'mesa_label'   => 'Mesa 08',
-                'items_count'  => 4,
-                'status_class' => 'open',
-                'status_label' => 'Abierto',
-                'total'        => 6800,
-            ],
-            [
-                'id'           => 1043,
-                'mesa_label'   => 'Barra',
-                'items_count'  => 1,
-                'status_class' => 'paid',
-                'status_label' => 'Pagado',
-                'total'        => 1500,
-            ],
-            [
-                'id'           => 1042,
-                'mesa_label'   => 'Mesa 06',
-                'items_count'  => 6,
-                'status_class' => 'paid',
-                'status_label' => 'Pagado',
-                'total'        => 9800,
-            ],
-            [
-                'id'           => 1041,
-                'mesa_label'   => 'Mesa 02',
-                'items_count'  => 2,
-                'status_class' => 'canceled',
-                'status_label' => 'Cancelado',
-                'total'        => 2400,
-            ],
         ];
 
-        // ── Alertas de stock bajo ──────────────────────────────────────────
-        // level: critical (≤ 5 u.) | low (≤ 15 u.)
+        // Stock bajo
         $stock_alerts = [
-            ['name' => 'Fernet Branca 750ml',  'qty' => 2,  'level' => 'critical'],
-            ['name' => 'Gin Beefeater 700ml',  'qty' => 4,  'level' => 'critical'],
-            ['name' => 'Coca-Cola 1.5L',        'qty' => 8,  'level' => 'low'],
+            ['name' => 'Fernet Branca 750ml', 'qty' => 2, 'level' => 'critical'],
+            ['name' => 'Gin Beefeater 700ml', 'qty' => 4, 'level' => 'critical'],
+            ['name' => 'Coca-Cola 1.5L', 'qty' => 8, 'level' => 'low'],
             ['name' => 'Cerveza Stella 330ml', 'qty' => 10, 'level' => 'low'],
-            ['name' => 'Agua Mineral 500ml',   'qty' => 12, 'level' => 'low'],
-            ['name' => 'Hielo bolsa 3kg',      'qty' => 3,  'level' => 'critical'],
+            ['name' => 'Agua Mineral 500ml', 'qty' => 12, 'level' => 'low'],
+            ['name' => 'Hielo bolsa 3kg', 'qty' => 3, 'level' => 'critical'],
         ];
 
-        // ── Render ─────────────────────────────────────────────────────────
         return view('dashboard', [
             'user'          => $user,
             'stats'         => $stats,

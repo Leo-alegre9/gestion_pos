@@ -17,3 +17,13 @@ $routes->group('auth', function($routes) {
     $routes->get('logout', 'Auth::logout');
 
 });
+
+
+/** Rutas para direccionar a la gestión de las mesas */
+$routes->get('mesas', 'MesaController::index');
+$routes->get('mesas/crear', 'MesaController::create');
+$routes->post('mesas/guardar', 'MesaController::store');
+$routes->post('mesas/cambiar-estado/(:num)', 'MesaController::cambiarEstado/$1');
+$routes->delete('mesas/eliminar/(:num)', 'MesaController::delete/$1');
+
+

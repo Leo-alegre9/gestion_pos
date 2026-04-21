@@ -151,6 +151,7 @@
       border-radius: 6px;
       display: flex;
       transition: color 0.15s;
+      text-decoration: none;
     }
     .logout-btn:hover { color: var(--text-secondary); }
     .logout-btn svg {
@@ -294,7 +295,7 @@
     .kpi-icon.violet { background: rgba(124,58,237,0.15); color: #a78bfa; }
     .kpi-icon.green  { background: rgba(34,197,94,0.12);  color: #4ade80; }
     .kpi-icon.amber  { background: rgba(251,191,36,0.12); color: #fbbf24; }
-    .kpi-icon.red    { background: rgba(248,113,113,0.12);color: #f87171; }
+    .kpi-icon.red    { background: rgba(248,113,113,0.12); color: #f87171; }
 
     /* ── Grid 2 cols ── */
     .grid-2 {
@@ -353,8 +354,12 @@
       border: 1px solid transparent;
       cursor: pointer;
       transition: transform 0.15s, border-color 0.15s;
+      text-decoration: none;
     }
-    .table-tile:hover { transform: translateY(-2px); border-color: rgba(124,58,237,0.3); }
+    .table-tile:hover {
+      transform: translateY(-2px);
+      border-color: rgba(124,58,237,0.3);
+    }
     .table-tile .tt-num {
       font-family: 'DM Mono', monospace;
       font-size: 18px;
@@ -416,8 +421,8 @@
     }
     .badge-open     { background: rgba(124,58,237,0.2); color: #a78bfa; }
     .badge-paid     { background: rgba(34,197,94,0.15); color: #4ade80; }
-    .badge-pending  { background: rgba(251,191,36,0.15);color: #fbbf24; }
-    .badge-canceled { background: rgba(248,113,113,0.15);color:#f87171; }
+    .badge-pending  { background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .badge-canceled { background: rgba(248,113,113,0.15); color: #f87171; }
 
     /* ── Productos top ── */
     .product-row {
@@ -537,7 +542,7 @@
       <a href="/mesas" class="nav-item">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
         Mesas
-        <span class="nav-badge">8</span>
+        <span class="nav-badge"><?= $stats['mesas_total'] ?? 8 ?></span>
       </a>
       <a href="/pedidos" class="nav-item">
         <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -602,7 +607,7 @@
     <div class="dash-content">
 
       <div class="page-header">
-        <h1>Buenas <?= date('H') < 12 ? 'noches' : (date('H') < 18 ? 'tardes' : 'noches') ?>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?> 👋</h1>
+        <h1>Buenas <?= date('H') < 12 ? 'días' : (date('H') < 18 ? 'tardes' : 'noches') ?>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?> 👋</h1>
         <p>Resumen operativo del turno · <?= date('l, d \d\e F') ?></p>
       </div>
 
@@ -616,6 +621,7 @@
           <div class="kpi-value">$<?= number_format($stats['ventas_hoy'] ?? 124500, 0, ',', '.') ?></div>
           <div class="kpi-sub up">↑ 12% vs ayer</div>
         </div>
+
         <div class="kpi-card">
           <div class="kpi-icon green">
             <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -624,6 +630,7 @@
           <div class="kpi-value"><?= $stats['pedidos_hoy'] ?? 37 ?></div>
           <div class="kpi-sub up">↑ 5 vs ayer</div>
         </div>
+
         <div class="kpi-card">
           <div class="kpi-icon amber">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -632,6 +639,7 @@
           <div class="kpi-value"><?= $stats['mesas_ocupadas'] ?? 4 ?><span style="font-size:14px;color:var(--text-tertiary);font-weight:400"> / <?= $stats['mesas_total'] ?? 8 ?></span></div>
           <div class="kpi-sub">50% de ocupación</div>
         </div>
+
         <div class="kpi-card">
           <div class="kpi-icon red">
             <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -689,7 +697,7 @@
                 $days = ['L','M','X','J','V','S','D'];
                 foreach($week_sales as $i => $val):
                   $h = round(($val/$max)*100);
-                  $isToday = $i === 5; // Sábado = hoy (hardcoded)
+                  $isToday = $i === 5;
               ?>
               <div class="mini-bar <?= $isToday ? 'today' : '' ?>" style="height:<?= $h ?>%" title="<?= $days[$i] ?>: $<?= number_format($val,0,',','.') ?>"></div>
               <?php endforeach; ?>
@@ -709,7 +717,7 @@
         </div>
       </div>
 
-      <!-- Mesas + Top productos + Stock -->
+      <!-- Mesas + Top productos -->
       <div class="grid-3-1" style="margin-bottom:1rem;">
         <!-- Estado mesas -->
         <div class="panel">
@@ -720,13 +728,13 @@
           <div class="panel-body">
             <div class="tables-grid">
               <?php foreach ($tables ?? [] as $table): ?>
-              <div class="table-tile tt-<?= esc($table['status']) ?>">
+              <a href="<?= base_url('/mesas') ?>" class="table-tile tt-<?= esc($table['status']) ?>">
                 <span class="tt-num"><?= str_pad($table['number'], 2, '0', STR_PAD_LEFT) ?></span>
                 <span class="tt-label"><?= ucfirst(esc($table['status'])) ?></span>
                 <?php if (!empty($table['amount'])): ?>
-                <span class="tt-amount">$<?= number_format($table['amount'], 0, ',', '.') ?></span>
+                  <span class="tt-amount">$<?= number_format($table['amount'], 0, ',', '.') ?></span>
                 <?php endif; ?>
-              </div>
+              </a>
               <?php endforeach; ?>
             </div>
           </div>
@@ -775,7 +783,7 @@
         </div>
       </div>
 
-    </div><!-- /dash-content -->
+    </div>
   </main>
 </div>
 </body>
