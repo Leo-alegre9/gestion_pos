@@ -129,9 +129,9 @@ class Auth extends BaseController
         // Registrar usuario usando el método del modelo
         $idUsuario = $this->usuarioModel->registrarUsuario($datos);
 
-        if ($idUsuario) {
+        if ($idUsuario && $idUsuario > 0) {
             // Registro exitoso
-            log_message('info', "Nuevo usuario registrado: {$datos['username']}");
+            log_message('info', "Nuevo usuario registrado: {$datos['username']} con ID: {$idUsuario}");
 
             return redirect()->to('/auth/login')
                 ->with('success', 'Registro exitoso. Por favor inicia sesión con tus credenciales.');
@@ -139,6 +139,7 @@ class Auth extends BaseController
 
         // Registro fallido - obtener errores del modelo
         $errores = $this->usuarioModel->getErrores();
+        log_message('error', "Fallo en registro de {$datos['username']}: " . json_encode($errores));
 
         return redirect()->back()
             ->withInput()

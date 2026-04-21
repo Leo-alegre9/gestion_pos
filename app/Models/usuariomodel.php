@@ -28,7 +28,7 @@ class UsuarioModel extends Model
     protected $validationRules = [
         'nombre'      => 'required|string|max_length[100]',
         'apellido'    => 'string|max_length[100]|permit_empty',
-        'dni'         => 'required|integer|is_unique[usuarios.dni]',
+        'dni'         => 'required|numeric|is_unique[usuarios.dni]',
         'username'    => 'required|string|min_length[3]|max_length[50]|is_unique[usuarios.username]',
         'email'       => 'required|valid_email|max_length[120]|is_unique[usuarios.email]',
         'password'    => 'required|string|min_length[6]|max_length[255]',
@@ -129,16 +129,22 @@ class UsuarioModel extends Model
      */
     public function registrarUsuario(array $datos)
     {
+        log_message('info', 'Iniciando registro de usuario: ' . json_encode($datos));
+
         // Validar que la contraseña esté presente
         if (!isset($datos['password']) || empty($datos['password'])) {
             $this->errors['password'] = 'La contraseña es obligatoria.';
+            log_message('error', 'Registro fallido: contraseña vacía');
             return false;
         }
 
         // VALIDAR DATOS ANTES DE PROCESAR (mientras aún existen los campos originales)
         if (!$this->validate($datos)) {
+            log_message('error', 'Validación fallida: ' . json_encode($this->errors));
             return false;
         }
+
+        log_message('info', 'Validación exitosa');
 
         // Extraer password y hacer trim de campos string
         $password = trim($datos['password']);
@@ -157,11 +163,26 @@ class UsuarioModel extends Model
             'fecha_creacion' => date('Y-m-d H:i:s')
         ];
 
+        log_message('info', 'Datos preparados para insert: ' . json_encode([
+            'nombre' => $datosFinales['nombre'],
+            'email' => $datosFinales['email'],
+            'username' => $datosFinales['username'],
+            'dni' => $datosFinales['dni']
+        ]));
+
         // Insertar usuario
-        if ($this->insert($datosFinales)) {
-            return $this->insertID();
+        $resultado = $this->insert($datosFinales);
+        
+        if ($resultado) {
+            $idUsuario = $this->insertID();
+            log_message('info', "Usuario registrado exitosamente con ID: {$idUsuario}");
+            return $idUsuario;
         }
 
+        $error = $this->db->error();
+        log_message('error', 'Error en insert: ' . json_encode($error));
+        $this->errors['database'] = 'Error al guardar en la base de datos';
+        
         return false;
     }
 
