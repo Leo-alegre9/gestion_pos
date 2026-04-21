@@ -18,8 +18,8 @@ class DashboardController extends BaseController
 
         // 1. Obtener los datos del usuario logueado en la sesión
         $user = [
-            'name' => session()->get('user_name') ?? 'Administrador',
-            'role' => session()->get('user_role') ?? 'Admin',
+            'name' => session()->get('nombre') ?? 'Administrador',
+            'role' => session()->get('rol_nombre') ?? 'Admin',
         ];
 
         // 2. Traer las mesas reales registradas en base de datos.
