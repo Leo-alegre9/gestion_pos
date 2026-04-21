@@ -553,7 +553,7 @@
         <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Productos
       </a>
-      <a href="/stock" class="nav-item">
+      <a href="/inventario" class="nav-item">
         <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
         Inventario
       </a>
@@ -599,7 +599,7 @@
       <div class="topbar-right">
         <div class="status-dot"></div>
         <span class="topbar-date"><?= date('d/m/Y · H:i') ?></span>
-        <a href="/pedidos/nuevo" class="btn-pill" style="font-size:12px;padding:0.4rem 1rem;">+ Nuevo pedido</a>
+        <a href="/pedidos/crear" class="btn-pill" style="font-size:12px;padding:0.4rem 1rem;">+ Nuevo pedido</a>
       </div>
     </div>
 
