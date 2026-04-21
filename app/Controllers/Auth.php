@@ -3,15 +3,19 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 class Auth extends BaseController
 {
-    protected $usuarioModel;
+    protected UsuarioModel $usuarioModel;
     protected $helpers = ['form', 'url'];
 
-    public function __construct()
+    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
-        $this->usuarioModel = model('UsuarioModel');
+        parent::initController($request, $response, $logger);
+        $this->usuarioModel = new UsuarioModel();
     }
 
     // ========================================
