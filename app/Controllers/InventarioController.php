@@ -73,8 +73,8 @@ class InventarioController extends BaseController
         // 1. Recopilar datos del formulario con sanitización
         $dataStock = [
             'id_producto'       => (int) $this->request->getPost('id_producto'),
-            'cantidad_disponible' => (float) $this->request->getPost('cantidad_disponible'),
-            'cantidad_minima'   => (float) $this->request->getPost('cantidad_minima'),
+            'cantidad_disponible' => (int) $this->request->getPost('cantidad_disponible'),
+            'cantidad_minima'   => (int) $this->request->getPost('cantidad_minima'),
             'ultima_actualizacion' => date('Y-m-d H:i:s'),
         ];
 
@@ -138,8 +138,8 @@ class InventarioController extends BaseController
 
         // 2. Recopilar datos del formulario con sanitización
         $dataStock = [
-            'cantidad_disponible' => (float) $this->request->getPost('cantidad_disponible'),
-            'cantidad_minima'   => (float) $this->request->getPost('cantidad_minima'),
+            'cantidad_disponible' => (int) $this->request->getPost('cantidad_disponible'),
+            'cantidad_minima'   => (int) $this->request->getPost('cantidad_minima'),
             'ultima_actualizacion' => date('Y-m-d H:i:s'),
         ];
 
