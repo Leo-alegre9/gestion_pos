@@ -32,7 +32,7 @@
         </svg>
         <span class="logo-text">Gestion_POS</span>
       </a>
-      <div class="nav-links">
+      <div class="nav-links" style="margin-left: auto;">
         <a href="#features">Características</a>
         <a href="#pagos">Pagos</a>
         <a href="#contacto">Contacto</a>
