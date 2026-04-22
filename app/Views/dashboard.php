@@ -204,14 +204,21 @@
 <?= $this->section('content') ?>
 
 <div class="page-header">
-  <h1>Buenas <span id="greeting"></span>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?></h1>
+  <h1><span id="greeting"></span>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?></h1>
   <p>Resumen operativo del turno · <span id="date"></span></p>
 </div>
 
 <script>
   // Saludo según la hora del navegador
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'días' : (hour < 18 ? 'tardes' : 'noches');
+  let greeting;
+  if (hour < 12) {
+    greeting = 'Buenos días';
+  } else if (hour < 18) {
+    greeting = 'Buenas tardes';
+  } else {
+    greeting = 'Buenas noches';
+  }
   document.getElementById('greeting').textContent = greeting;
 
   // Fecha formateada
