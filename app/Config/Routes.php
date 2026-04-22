@@ -57,6 +57,10 @@ $routes->get('pagos/pagar/(:num)', 'PagoController::pagar/$1');
 $routes->post('pagos/registrar/(:num)', 'PagoController::store/$1');
 $routes->get('pagos/recibo/(:num)', 'PagoController::recibo/$1');
 
+/** Rutas de facturación */
+$routes->get('facturacion', 'FacturacionController::index');
+$routes->get('facturacion/detalle/(:num)', 'FacturacionController::detalle/$1');
+
 /** Rutas para la gestión de categorías */
 $routes->get('categorias', 'CategoriaController::index');
 $routes->get('categorias/crear', 'CategoriaController::create');
