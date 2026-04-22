@@ -1,7 +1,8 @@
 <?= $this->extend('layouts/app') ?>
 
 <?= $this->section('topbar_right') ?>
-<a href="/productos" class="btn-ghost">← Volver</a>
+<a href="/dashboard" class="btn-ghost">← Dashboard</a>
+<a href="/productos" class="btn-ghost">Volver</a>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

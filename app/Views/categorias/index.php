@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/app') ?>
 
 <?= $this->section('topbar_right') ?>
+<a href="/dashboard" class="btn-ghost">← Dashboard</a>
 <a href="/categorias/crear" class="btn-pill">
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   Nueva categoría
@@ -11,32 +12,47 @@
 
 <div class="page-header-row">
   <h1>Categorías de Productos</h1>
+  <p style="margin-top:0.25rem;font-size:12px;color:var(--text-tertiary)">Administra las categorías disponibles para los productos</p>
 </div>
+
+<?php if (session()->getFlashdata('success')): ?>
+<div class="alert alert-success">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><polyline points="20 6 9 17 4 12"/></svg>
+  <span><?= session()->getFlashdata('success') ?></span>
+</div>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+<div class="alert alert-error">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <span><?= session()->getFlashdata('error') ?></span>
+</div>
+<?php endif; ?>
 
 <div class="panel">
   <?php if (!empty($categorias)): ?>
   <table class="data-table">
     <thead>
       <tr>
-        <th>#</th>
         <th>Nombre</th>
         <th>Descripción</th>
-        <th>Estado</th>
+        <th style="text-align:center">Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       <?php foreach ($categorias as $cat): ?>
       <tr>
-        <td class="mono"><?= $cat['id_categoria'] ?></td>
-        <td style="font-weight:500;color:var(--text-primary)"><?= esc($cat['nombre']) ?></td>
-        <td><?= $cat['descripcion'] ? esc(substr($cat['descripcion'], 0, 60)) . (strlen($cat['descripcion']) > 60 ? '…' : '') : '<span style="color:var(--text-tertiary)">—</span>' ?></td>
         <td>
-          <?php if ($cat['activa']): ?>
-            <span class="badge badge-green">Activa</span>
-          <?php else: ?>
-            <span class="badge badge-gray">Inactiva</span>
-          <?php endif; ?>
+          <div style="font-weight:500;color:var(--text-primary)"><?= esc($cat['nombre']) ?></div>
+        </td>
+        <td>
+          <div style="font-size:12px;color:var(--text-tertiary);">
+            <?= !empty($cat['descripcion']) ? esc(substr($cat['descripcion'], 0, 60)) . (strlen($cat['descripcion']) > 60 ? '…' : '') : '—' ?>
+          </div>
+        </td>
+        <td style="text-align:center">
+          <?= $cat['activa'] ? '<span class="badge badge-green">Activa</span>' : '<span class="badge badge-gray">Inactiva</span>' ?>
         </td>
         <td>
           <div style="display:flex;gap:0.4rem;align-items:center;">

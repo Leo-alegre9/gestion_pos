@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/app') ?>
 
 <?= $this->section('topbar_right') ?>
+<a href="/dashboard" class="btn-ghost">← Dashboard</a>
 <a href="/categorias" class="btn-ghost">Categorías</a>
 <a href="/productos/crear" class="btn-pill">
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
