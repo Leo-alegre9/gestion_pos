@@ -118,7 +118,7 @@
         </div>
         <div>
           <label class="form-label" style="margin-bottom:0.3rem">Cant.</label>
-          <input type="number" id="prod-qty" class="form-control" value="1" min="0.5" step="0.5" style="text-align:center">
+          <input type="number" id="prod-qty" class="form-control" value="1" min="1" step="1" style="text-align:center">
         </div>
         <div style="padding-bottom:1px">
           <label class="form-label" style="margin-bottom:0.3rem;visibility:hidden">+</label>
@@ -215,7 +215,7 @@ function onProdChange() {
 // ── Agregar item al carrito ──
 function agregarItem() {
   var sel = document.getElementById('prod-select');
-  var qty = parseFloat(document.getElementById('prod-qty').value);
+  var qty = parseInt(document.getElementById('prod-qty').value, 10);
 
   if (!sel.value) { sel.focus(); return; }
   if (!(qty > 0)) { document.getElementById('prod-qty').focus(); return; }
@@ -288,10 +288,10 @@ function renderCart() {
 
 // ── Helpers ──
 function fmtNum(n) {
-  return n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return n.toFixed(1).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 function fmtCant(n) {
-  return n % 1 === 0 ? n.toFixed(0) : n.toFixed(2).replace('.', ',');
+  return Math.round(n).toString();
 }
 function roundDec(n) { return Math.round(n * 100) / 100; }
 function escHtml(s) {

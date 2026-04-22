@@ -28,9 +28,9 @@
         id="cantidad_disponible"
         name="cantidad_disponible"
         class="form-control <?= !empty($formErrors['cantidad_disponible']) ? 'is-error' : '' ?>"
-        value="<?= old('cantidad_disponible', $stock['cantidad_disponible']) ?>"
+        value="<?= old('cantidad_disponible', (int)$stock['cantidad_disponible']) ?>"
         min="0"
-        step="0.01"
+        step="1"
         required
       >
       <div class="form-hint">Unidades actuales en existencia.</div>
@@ -46,9 +46,9 @@
         id="cantidad_minima"
         name="cantidad_minima"
         class="form-control <?= !empty($formErrors['cantidad_minima']) ? 'is-error' : '' ?>"
-        value="<?= old('cantidad_minima', $stock['cantidad_minima']) ?>"
+        value="<?= old('cantidad_minima', (int)$stock['cantidad_minima']) ?>"
         min="0"
-        step="0.01"
+        step="1"
         required
       >
       <div class="form-hint">Umbral de alerta de stock bajo.</div>

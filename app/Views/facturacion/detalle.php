@@ -163,9 +163,9 @@
               <div style="font-size:11.5px;color:var(--text-tertiary)"><?= esc($item['observaciones']) ?></div>
             <?php endif; ?>
           </td>
-          <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 2, ',', '.') ?></td>
-          <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 2, ',', '.') ?></td>
-          <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">$<?= number_format((float)$item['subtotal'], 2, ',', '.') ?></td>
+          <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 0, ',', '.') ?></td>
+          <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 1, ',', '.') ?></td>
+          <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">$<?= number_format((float)$item['subtotal'], 1, ',', '.') ?></td>
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
@@ -175,7 +175,7 @@
     <tfoot class="items-tfoot">
       <tr>
         <th colspan="3" style="text-align:right;font-size:13px;color:var(--text-secondary);font-weight:500">Subtotal pedido</th>
-        <th class="mono" style="text-align:right;color:var(--text-primary)">$<?= number_format($total, 2, ',', '.') ?></th>
+        <th class="mono" style="text-align:right;color:var(--text-primary)">$<?= number_format($total, 1, ',', '.') ?></th>
       </tr>
     </tfoot>
   </table>
@@ -186,7 +186,7 @@
   <div class="fac-totals-box">
     <div class="total-line">
       <span>Subtotal</span>
-      <span class="mono">$<?= number_format($total, 2, ',', '.') ?></span>
+      <span class="mono">$<?= number_format($total, 1, ',', '.') ?></span>
     </div>
     <div class="total-line">
       <span>Método de pago</span>
@@ -194,16 +194,16 @@
     </div>
     <div class="total-line">
       <span>Monto recibido</span>
-      <span class="mono">$<?= number_format((float)$pago['monto'], 2, ',', '.') ?></span>
+      <span class="mono">$<?= number_format((float)$pago['monto'], 1, ',', '.') ?></span>
     </div>
     <div class="total-line main">
       <span>Total cobrado</span>
-      <span class="mono">$<?= number_format((float)$pago['monto'], 2, ',', '.') ?></span>
+      <span class="mono">$<?= number_format((float)$pago['monto'], 1, ',', '.') ?></span>
     </div>
     <?php if ($vuelto > 0): ?>
     <div class="total-line vuelto">
       <span>Vuelto entregado</span>
-      <span class="mono">$<?= number_format($vuelto, 2, ',', '.') ?></span>
+      <span class="mono">$<?= number_format($vuelto, 1, ',', '.') ?></span>
     </div>
     <?php endif; ?>
   </div>

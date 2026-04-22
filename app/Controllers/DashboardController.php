@@ -46,7 +46,7 @@ class DashboardController extends BaseController
                 'id_mesa' => $mesa['id_mesa'],
                 'number'  => $mesa['numero'],
                 'status'  => $mesa['estado'],
-                'amount'  => $mesaAmounts[$mesa['id_mesa']] > 0 ? $mesaAmounts[$mesa['id_mesa']] : null,
+                'amount'  => ($mesaAmounts[$mesa['id_mesa']] ?? 0) > 0 ? $mesaAmounts[$mesa['id_mesa']] : null,
             ];
         }
 

@@ -217,7 +217,7 @@
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
     </div>
     <div class="kpi-label">Ventas hoy</div>
-    <div class="kpi-value">$<?= number_format($stats['ventas_hoy'], 0, ',', '.') ?></div>
+    <div class="kpi-value">$<?= number_format($stats['ventas_hoy'], 1, ',', '.') ?></div>
     <div class="kpi-sub <?= $stats['ventas_hoy'] > 0 ? 'up' : '' ?>">
       <?= $stats['ventas_hoy'] > 0 ? 'Pagos registrados hoy' : 'Sin ventas registradas' ?>
     </div>
@@ -293,7 +293,7 @@
           <td style="color:var(--text-tertiary)"><?= $order['items_count'] ?> ítem<?= $order['items_count'] != 1 ? 's' : '' ?></td>
           <td><span class="badge-pill badge-<?= esc($order['status_class']) ?>"><?= esc($order['status_label']) ?></span></td>
           <td class="order-amount" style="text-align:right;padding-right:1.25rem">
-            $<?= number_format($order['total'], 0, ',', '.') ?>
+            $<?= number_format($order['total'], 1, ',', '.') ?>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -325,7 +325,7 @@
           <span class="tt-num"><?= str_pad($table['number'], 2, '0', STR_PAD_LEFT) ?></span>
           <span class="tt-label"><?= ucfirst(esc($table['status'])) ?></span>
           <?php if ($table['amount'] !== null): ?>
-            <span class="tt-amount">$<?= number_format($table['amount'], 0, ',', '.') ?></span>
+            <span class="tt-amount">$<?= number_format($table['amount'], 1, ',', '.') ?></span>
           <?php endif; ?>
         </a>
         <?php endforeach; ?>

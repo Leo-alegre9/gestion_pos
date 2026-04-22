@@ -39,7 +39,7 @@
           <?php endif; ?>
         </td>
         <td><span class="badge badge-violet"><?= esc($p['categoria_nombre'] ?? '—') ?></span></td>
-        <td class="mono" style="text-align:right;color:var(--text-primary);font-weight:500">$<?= number_format((float)$p['precio_venta'], 2, ',', '.') ?></td>
+        <td class="mono" style="text-align:right;color:var(--text-primary);font-weight:500">$<?= number_format((float)$p['precio_venta'], 1, ',', '.') ?></td>
         <td style="text-align:center">
           <?= $p['se_vende_en_barra'] ? '<span class="badge badge-green">Sí</span>' : '<span style="color:var(--text-tertiary);font-size:12px">No</span>' ?>
         </td>

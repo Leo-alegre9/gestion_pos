@@ -114,9 +114,9 @@
                 <div style="font-size:11.5px;color:var(--text-tertiary)"><?= esc($item['observaciones']) ?></div>
               <?php endif; ?>
             </td>
-            <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 2, ',', '.') ?></td>
-            <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 2, ',', '.') ?></td>
-            <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">$<?= number_format((float)$item['subtotal'], 2, ',', '.') ?></td>
+            <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 0, ',', '.') ?></td>
+            <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 1, ',', '.') ?></td>
+            <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">$<?= number_format((float)$item['subtotal'], 1, ',', '.') ?></td>
             <?php if (!$pedido['fecha_cierre']): ?>
             <td style="text-align:center">
               <form method="post" action="/pedidos/eliminar-detalle/<?= $pedido['id_pedido'] ?>/<?= $item['id_detalle_pedido'] ?>" onsubmit="return confirm('¿Quitar «<?= esc($item['nombre']) ?>» del pedido?')">
@@ -145,7 +145,7 @@
     <tfoot class="items-tfoot">
       <tr>
         <th colspan="<?= !$pedido['fecha_cierre'] ? 4 : 3 ?>" style="text-align:right;font-size:13px;color:var(--text-secondary);font-weight:500">Total</th>
-        <th class="mono" style="text-align:right;font-size:20px;color:var(--purple,#7c3aed)">$<?= number_format($total, 2, ',', '.') ?></th>
+        <th class="mono" style="text-align:right;font-size:20px;color:var(--purple,#7c3aed)">$<?= number_format($total, 1, ',', '.') ?></th>
       </tr>
     </tfoot>
   </table>
@@ -175,7 +175,7 @@
         Pago registrado
       </div>
       <div style="font-size:12px;color:var(--text-tertiary)">
-        $<?= number_format((float)$pago['monto'], 2, ',', '.') ?> · <?= esc($pago['metodo_nombre']) ?> · <?= date('d/m/Y H:i', strtotime($pago['fecha_pago'])) ?>
+        $<?= number_format((float)$pago['monto'], 1, ',', '.') ?> · <?= esc($pago['metodo_nombre']) ?> · <?= date('d/m/Y H:i', strtotime($pago['fecha_pago'])) ?>
       </div>
     </div>
     <a href="/pagos/recibo/<?= $pago['id_pago'] ?>" class="action-link action-view">
@@ -220,7 +220,7 @@
           <option value="">— Seleccioná un producto —</option>
           <?php foreach ($productosDisponibles ?? [] as $prod): ?>
             <option value="<?= $prod['id_producto'] ?>" data-precio="<?= $prod['precio_venta'] ?>">
-              <?= esc($prod['nombre']) ?> — $<?= number_format((float)$prod['precio_venta'], 2, ',', '.') ?>
+              <?= esc($prod['nombre']) ?> — $<?= number_format((float)$prod['precio_venta'], 1, ',', '.') ?>
             </option>
           <?php endforeach; ?>
         </select>
@@ -253,7 +253,7 @@ function modalPrecioPreview() {
   if (!sel.value) { prev.textContent = ''; return; }
   var precio   = parseFloat(sel.options[sel.selectedIndex].getAttribute('data-precio'));
   var subtotal = precio * qty;
-  prev.textContent = '$' + precio.toFixed(2).replace('.', ',') + ' c/u · Subtotal: $' + subtotal.toFixed(2).replace('.', ',');
+  prev.textContent = '$' + precio.toFixed(1).replace('.', ',') + ' c/u · Subtotal: $' + subtotal.toFixed(1).replace('.', ',');
 }
 </script>
 <?php endif; ?>

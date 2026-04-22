@@ -63,7 +63,7 @@
         <td>
           <?php if (!empty($pedido['id_pago'])): ?>
             <div style="font-size:12px;color:#15803d;font-weight:500">
-              $<?= number_format((float)$pedido['monto_pagado'], 2, ',', '.') ?>
+              $<?= number_format((float)$pedido['monto_pagado'], 1, ',', '.') ?>
             </div>
             <div style="font-size:11px;color:var(--text-tertiary)"><?= esc($pedido['metodo_pago_nombre']) ?></div>
           <?php else: ?>

@@ -40,8 +40,8 @@
       <tr>
         <td style="font-weight:500;color:var(--text-primary)"><?= esc($item['producto_nombre']) ?></td>
         <td><span class="badge badge-violet"><?= esc($item['categoria_nombre'] ?? '—') ?></span></td>
-        <td class="mono" style="text-align:center;font-weight:500"><?= number_format($disp, 2, ',', '.') ?></td>
-        <td class="mono" style="text-align:center;color:var(--text-tertiary)"><?= number_format($min, 2, ',', '.') ?></td>
+        <td class="mono" style="text-align:center;font-weight:500"><?= number_format($disp, 0, ',', '.') ?></td>
+        <td class="mono" style="text-align:center;color:var(--text-tertiary)"><?= number_format($min, 0, ',', '.') ?></td>
         <td>
           <span class="badge <?= $cls ?>"><?= $nivel ?></span>
           <div style="background:var(--border);height:4px;border-radius:2px;margin-top:5px;overflow:hidden">

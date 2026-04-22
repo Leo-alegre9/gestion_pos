@@ -78,10 +78,10 @@
   </div>
   <div class="info-card">
     <div class="info-card-label">Monto cobrado</div>
-    <div class="info-card-value mono" style="font-size:18px;color:#15803d">$<?= number_format((float)$pago['monto'], 2, ',', '.') ?></div>
+    <div class="info-card-value mono" style="font-size:18px;color:#15803d">$<?= number_format((float)$pago['monto'], 1, ',', '.') ?></div>
     <?php $vuelto = (float)$pago['monto'] - $total; ?>
     <?php if ($vuelto > 0.005): ?>
-      <div class="info-card-sub" style="color:#15803d">Vuelto: $<?= number_format($vuelto, 2, ',', '.') ?></div>
+      <div class="info-card-sub" style="color:#15803d">Vuelto: $<?= number_format($vuelto, 1, ',', '.') ?></div>
     <?php endif; ?>
   </div>
 </div>
@@ -110,9 +110,9 @@
               <div style="font-size:11.5px;color:var(--text-tertiary)"><?= esc($item['observaciones']) ?></div>
             <?php endif; ?>
           </td>
-          <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 2, ',', '.') ?></td>
-          <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 2, ',', '.') ?></td>
-          <td class="mono" style="text-align:right;font-weight:500">$<?= number_format((float)$item['subtotal'], 2, ',', '.') ?></td>
+          <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 0, ',', '.') ?></td>
+          <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 1, ',', '.') ?></td>
+          <td class="mono" style="text-align:right;font-weight:500">$<?= number_format((float)$item['subtotal'], 1, ',', '.') ?></td>
         </tr>
         <?php endforeach; ?>
       <?php else: ?>
@@ -122,7 +122,7 @@
     <tfoot class="items-tfoot">
       <tr>
         <th colspan="3" style="text-align:right;font-size:13px;color:var(--text-secondary);font-weight:500">Total pedido</th>
-        <th class="mono" style="text-align:right;font-size:20px;color:var(--purple)">$<?= number_format($total, 2, ',', '.') ?></th>
+        <th class="mono" style="text-align:right;font-size:20px;color:var(--purple)">$<?= number_format($total, 1, ',', '.') ?></th>
       </tr>
     </tfoot>
   </table>

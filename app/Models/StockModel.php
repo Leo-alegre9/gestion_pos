@@ -18,8 +18,8 @@ class StockModel extends Model
      */
     protected $validationRules = [
         'id_producto'           => 'required|integer|greater_than[0]',
-        'cantidad_disponible'   => 'required|decimal|greater_than_equal_to[0]',
-        'cantidad_minima'       => 'required|decimal|greater_than_equal_to[0]',
+        'cantidad_disponible'   => 'required|integer|greater_than_equal_to[0]',
+        'cantidad_minima'       => 'required|integer|greater_than_equal_to[0]',
     ];
 
     /**
@@ -32,11 +32,12 @@ class StockModel extends Model
         ],
         'cantidad_disponible' => [
             'required' => 'La cantidad actual es requerida.',
-            'decimal' => 'La cantidad debe ser un número válido.',
+            'integer'  => 'La cantidad debe ser un número entero.',
             'greater_than_equal_to' => 'La cantidad no puede ser negativa.',
         ],
         'cantidad_minima' => [
             'required' => 'La cantidad mínima es requerida.',
+            'integer'  => 'La cantidad mínima debe ser un número entero.',
             'greater_than_equal_to' => 'La cantidad mínima no puede ser negativa.',
         ],
     ];

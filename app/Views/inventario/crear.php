@@ -47,7 +47,7 @@
         class="form-control <?= !empty($formErrors['cantidad_disponible']) ? 'is-error' : '' ?>"
         value="<?= old('cantidad_disponible', '0') ?>"
         min="0"
-        step="0.01"
+        step="1"
         required
       >
       <div class="form-hint">Unidades actuales en existencia.</div>
@@ -65,7 +65,7 @@
         class="form-control <?= !empty($formErrors['cantidad_minima']) ? 'is-error' : '' ?>"
         value="<?= old('cantidad_minima', '0') ?>"
         min="0"
-        step="0.01"
+        step="1"
         required
       >
       <div class="form-hint">Umbral de alerta. Si el stock disponible cae por debajo de este valor, se genera una alerta.</div>

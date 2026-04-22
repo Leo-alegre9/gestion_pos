@@ -72,7 +72,7 @@
   </div>
   <div class="info-card">
     <div class="info-card-label">Total a cobrar</div>
-    <div class="info-card-value mono" style="font-size:18px;color:var(--purple)">$<?= number_format($total, 2, ',', '.') ?></div>
+    <div class="info-card-value mono" style="font-size:18px;color:var(--purple)">$<?= number_format($total, 1, ',', '.') ?></div>
   </div>
 </div>
 
@@ -102,9 +102,9 @@
                 <div style="font-size:11.5px;color:var(--text-tertiary)"><?= esc($item['observaciones']) ?></div>
               <?php endif; ?>
             </td>
-            <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 2, ',', '.') ?></td>
-            <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 2, ',', '.') ?></td>
-            <td class="mono" style="text-align:right;font-weight:500">$<?= number_format((float)$item['subtotal'], 2, ',', '.') ?></td>
+            <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 0, ',', '.') ?></td>
+            <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 1, ',', '.') ?></td>
+            <td class="mono" style="text-align:right;font-weight:500">$<?= number_format((float)$item['subtotal'], 1, ',', '.') ?></td>
           </tr>
           <?php endforeach; ?>
         <?php else: ?>
@@ -114,7 +114,7 @@
       <tfoot class="items-tfoot">
         <tr>
           <th colspan="3" style="text-align:right;font-size:13px;color:var(--text-secondary);font-weight:500">Total</th>
-          <th class="mono" style="text-align:right;font-size:20px;color:var(--purple)">$<?= number_format($total, 2, ',', '.') ?></th>
+          <th class="mono" style="text-align:right;font-size:20px;color:var(--purple)">$<?= number_format($total, 1, ',', '.') ?></th>
         </tr>
       </tfoot>
     </table>
@@ -159,11 +159,11 @@
         <div class="form-group">
           <label for="monto" class="form-label">Monto recibido <span class="req">*</span></label>
           <input type="number" id="monto" name="monto" class="form-control"
-            value="<?= old('monto', number_format($total, 2, '.', '')) ?>"
+            value="<?= old('monto', number_format($total, 1, '.', '')) ?>"
             min="0.01" step="0.01" required
             oninput="calcVuelto()">
           <div style="font-size:11.5px;color:var(--text-tertiary);margin-top:0.25rem">
-            Total del pedido: <strong>$<?= number_format($total, 2, ',', '.') ?></strong>
+            Total del pedido: <strong>$<?= number_format($total, 1, ',', '.') ?></strong>
           </div>
           <?php if (!empty(session()->getFlashdata('errors')['monto'])): ?>
             <div class="field-error"><?= esc(session()->getFlashdata('errors')['monto']) ?></div>
@@ -209,7 +209,7 @@ function calcVuelto() {
   var val    = document.getElementById('vuelto-val');
   if (vuelto > 0.001) {
     row.classList.add('visible');
-    val.textContent = '$' + vuelto.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    val.textContent = '$' + vuelto.toFixed(1).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   } else {
     row.classList.remove('visible');
   }

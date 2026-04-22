@@ -33,11 +33,11 @@
 
     <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-secondary);margin-bottom:0.4rem;">
       <span>Disponible</span>
-      <span class="mono" style="font-weight:500;color:var(--text-primary)"><?= number_format($disp, 2, ',', '.') ?></span>
+      <span class="mono" style="font-weight:500;color:var(--text-primary)"><?= number_format($disp, 0, ',', '.') ?></span>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-secondary);margin-bottom:0.75rem;">
       <span>Mínimo</span>
-      <span class="mono"><?= number_format($min, 2, ',', '.') ?></span>
+      <span class="mono"><?= number_format($min, 0, ',', '.') ?></span>
     </div>
 
     <div style="background:var(--border);height:5px;border-radius:3px;overflow:hidden;margin-bottom:1rem;">

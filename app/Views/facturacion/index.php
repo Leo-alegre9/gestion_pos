@@ -120,10 +120,10 @@ document.getElementById('fecha').addEventListener('change', function() {
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
     </div>
     <div class="kpi-label">Total facturado</div>
-    <div class="kpi-value">$<?= number_format($total_dia, 2, ',', '.') ?></div>
+    <div class="kpi-value">$<?= number_format($total_dia, 1, ',', '.') ?></div>
     <div class="kpi-sub <?= $variacion === null ? '' : ($variacion >= 0 ? 'up' : 'down') ?>">
       <?php if ($variacion !== null): ?>
-        <?= $variacion >= 0 ? '↑' : '↓' ?> <?= abs($variacion) ?>% vs ayer ($<?= number_format($total_ayer, 0, ',', '.') ?>)
+        <?= $variacion >= 0 ? '↑' : '↓' ?> <?= abs($variacion) ?>% vs ayer ($<?= number_format($total_ayer, 1, ',', '.') ?>)
       <?php elseif ($total_ayer == 0 && $fecha !== date('Y-m-d', strtotime('yesterday'))): ?>
         Sin ventas ayer para comparar
       <?php else: ?>
@@ -146,7 +146,7 @@ document.getElementById('fecha').addEventListener('change', function() {
       <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
     </div>
     <div class="kpi-label">Ticket promedio</div>
-    <div class="kpi-value">$<?= $count_pagos > 0 ? number_format($ticket_promedio, 2, ',', '.') : '0,00' ?></div>
+    <div class="kpi-value">$<?= $count_pagos > 0 ? number_format($ticket_promedio, 1, ',', '.') : '0,0' ?></div>
     <div class="kpi-sub">Por factura emitida</div>
   </div>
 
@@ -220,7 +220,7 @@ document.getElementById('fecha').addEventListener('change', function() {
           <td style="font-size:13px"><?= esc($p['metodo_nombre']) ?></td>
           <td class="mono" style="text-align:center;font-size:12px;color:var(--text-tertiary)"><?= $p['items_count'] ?></td>
           <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">
-            $<?= number_format((float)$p['monto'], 2, ',', '.') ?>
+            $<?= number_format((float)$p['monto'], 1, ',', '.') ?>
           </td>
           <td style="text-align:center" class="no-print">
             <a href="/facturacion/detalle/<?= $p['id_pago'] ?>" class="action-link action-view">
@@ -235,7 +235,7 @@ document.getElementById('fecha').addEventListener('change', function() {
         <tr>
           <td colspan="6" style="text-align:right;padding:.8rem 1rem;font-size:13px;font-weight:500;color:var(--text-secondary);border-top:2px solid var(--border)">Total del día</td>
           <td class="mono" style="text-align:right;padding:.8rem 1rem;font-size:18px;font-weight:600;color:var(--purple);border-top:2px solid var(--border)">
-            $<?= number_format($total_dia, 2, ',', '.') ?>
+            $<?= number_format($total_dia, 1, ',', '.') ?>
           </td>
           <td style="border-top:2px solid var(--border)" class="no-print"></td>
         </tr>
@@ -266,7 +266,7 @@ document.getElementById('fecha').addEventListener('change', function() {
           <div class="metodo-row">
             <div class="metodo-name">
               <span><?= esc($m['metodo']) ?></span>
-              <strong>$<?= number_format($m['total'], 2, ',', '.') ?></strong>
+              <strong>$<?= number_format($m['total'], 1, ',', '.') ?></strong>
             </div>
             <div class="metodo-bar-bg">
               <div class="metodo-bar" style="width:<?= $max_metodo_total > 0 ? round($m['total'] / $max_metodo_total * 100) : 0 ?>%"></div>
@@ -313,17 +313,17 @@ document.getElementById('fecha').addEventListener('change', function() {
         <div style="border-top:1px solid var(--border);padding-top:.75rem">
           <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
             <span style="font-size:12px;color:var(--text-tertiary)">Total pedidos</span>
-            <span class="mono" style="font-size:12px">$<?= number_format(array_sum(array_column($pagos, 'total_pedido')), 2, ',', '.') ?></span>
+            <span class="mono" style="font-size:12px">$<?= number_format(array_sum(array_column($pagos, 'total_pedido')), 1, ',', '.') ?></span>
           </div>
           <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
             <span style="font-size:12px;color:var(--text-tertiary)">Total cobrado</span>
-            <span class="mono" style="font-size:12px;color:var(--purple);font-weight:500">$<?= number_format($total_dia, 2, ',', '.') ?></span>
+            <span class="mono" style="font-size:12px;color:var(--purple);font-weight:500">$<?= number_format($total_dia, 1, ',', '.') ?></span>
           </div>
           <?php $vueltoTotal = array_sum(array_column($pagos, 'monto')) - array_sum(array_column($pagos, 'total_pedido')); ?>
           <?php if ($vueltoTotal > 0.005): ?>
           <div style="display:flex;justify-content:space-between">
             <span style="font-size:12px;color:var(--text-tertiary)">Vuelto entregado</span>
-            <span class="mono" style="font-size:12px">$<?= number_format($vueltoTotal, 2, ',', '.') ?></span>
+            <span class="mono" style="font-size:12px">$<?= number_format($vueltoTotal, 1, ',', '.') ?></span>
           </div>
           <?php endif; ?>
         </div>
