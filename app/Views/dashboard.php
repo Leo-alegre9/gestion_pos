@@ -204,9 +204,21 @@
 <?= $this->section('content') ?>
 
 <div class="page-header">
-  <h1>Buenas <?= date('H') < 12 ? 'días' : (date('H') < 18 ? 'tardes' : 'noches') ?>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?></h1>
-  <p>Resumen operativo del turno · <?= date('l, d \d\e F') ?></p>
+  <h1>Buenas <span id="greeting"></span>, <?= esc(explode(' ', $user['name'] ?? 'Admin')[0]) ?></h1>
+  <p>Resumen operativo del turno · <span id="date"></span></p>
 </div>
+
+<script>
+  // Saludo según la hora del navegador
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'días' : (hour < 18 ? 'tardes' : 'noches');
+  document.getElementById('greeting').textContent = greeting;
+
+  // Fecha formateada
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const dateText = new Date().toLocaleDateString('es-ES', options);
+  document.getElementById('date').textContent = dateText;
+</script>
 
 <!-- KPIs -->
 <div class="kpi-grid">
