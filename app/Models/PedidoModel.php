@@ -109,13 +109,40 @@ class PedidoModel extends Model
                 pedidos.*,
                 COALESCE(mesas.numero, \'N/A\') as numero_mesa,
                 usuarios.nombre as usuario_nombre,
+                estados_pedido.nombre as estado_nombre,
+                pagos.id_pago,
+                pagos.monto as monto_pagado,
+                metodos_pago.nombre as metodo_pago_nombre
+            ', false)
+            ->join('mesas', 'mesas.id_mesa = pedidos.id_mesa', 'left')
+            ->join('usuarios', 'usuarios.id_usuario = pedidos.id_usuario', 'left')
+            ->join('estados_pedido', 'estados_pedido.id_estado_pedido = pedidos.id_estado_pedido', 'left')
+            ->join('pagos', 'pagos.id_pedido = pedidos.id_pedido', 'left')
+            ->join('metodos_pago', 'metodos_pago.id_metodo_pago = pagos.id_metodo_pago', 'left')
+            ->where('DATE(pedidos.fecha_cierre) =', $fecha, false)
+            ->where('pedidos.fecha_cierre IS NOT NULL', null, false)
+            ->orderBy('pedidos.fecha_cierre', 'DESC')
+            ->findAll();
+    }
+
+    public function getPedidosCerradosSinPago(): array
+    {
+        return $this->select('
+                pedidos.id_pedido,
+                pedidos.tipo_pedido,
+                pedidos.fecha_apertura,
+                pedidos.fecha_cierre,
+                pedidos.observaciones,
+                COALESCE(mesas.numero, \'N/A\') as numero_mesa,
+                usuarios.nombre as usuario_nombre,
                 estados_pedido.nombre as estado_nombre
             ', false)
             ->join('mesas', 'mesas.id_mesa = pedidos.id_mesa', 'left')
             ->join('usuarios', 'usuarios.id_usuario = pedidos.id_usuario', 'left')
             ->join('estados_pedido', 'estados_pedido.id_estado_pedido = pedidos.id_estado_pedido', 'left')
-            ->where('DATE(pedidos.fecha_cierre) =', $fecha, false)
+            ->join('pagos', 'pagos.id_pedido = pedidos.id_pedido', 'left')
             ->where('pedidos.fecha_cierre IS NOT NULL', null, false)
+            ->where('pagos.id_pago IS NULL', null, false)
             ->orderBy('pedidos.fecha_cierre', 'DESC')
             ->findAll();
     }

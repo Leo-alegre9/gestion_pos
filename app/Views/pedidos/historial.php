@@ -36,7 +36,7 @@
         <th>Usuario</th>
         <th>Apertura</th>
         <th>Cierre</th>
-        <th>Estado</th>
+        <th>Pago</th>
         <th></th>
       </tr>
     </thead>
@@ -60,12 +60,34 @@
         <td><?= esc($pedido['usuario_nombre']) ?></td>
         <td class="mono" style="font-size:12px"><?= date('d/m/Y H:i', strtotime($pedido['fecha_apertura'])) ?></td>
         <td class="mono" style="font-size:12px"><?= $pedido['fecha_cierre'] ? date('d/m/Y H:i', strtotime($pedido['fecha_cierre'])) : '—' ?></td>
-        <td><span class="badge badge-gray"><?= esc($pedido['estado_nombre']) ?></span></td>
         <td>
-          <a href="/pedidos/detalles/<?= $pedido['id_pedido'] ?>" class="action-link action-view">
-            <svg class="icon-sm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            Ver
-          </a>
+          <?php if (!empty($pedido['id_pago'])): ?>
+            <div style="font-size:12px;color:#15803d;font-weight:500">
+              $<?= number_format((float)$pedido['monto_pagado'], 2, ',', '.') ?>
+            </div>
+            <div style="font-size:11px;color:var(--text-tertiary)"><?= esc($pedido['metodo_pago_nombre']) ?></div>
+          <?php else: ?>
+            <span style="font-size:12px;color:#b45309;font-weight:500">Pendiente</span>
+          <?php endif; ?>
+        </td>
+        <td>
+          <div style="display:flex;gap:0.4rem">
+            <a href="/pedidos/detalles/<?= $pedido['id_pedido'] ?>" class="action-link action-view">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Ver
+            </a>
+            <?php if (empty($pedido['id_pago'])): ?>
+            <a href="/pagos/pagar/<?= $pedido['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
+              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Cobrar
+            </a>
+            <?php else: ?>
+            <a href="/pagos/recibo/<?= $pedido['id_pago'] ?>" class="action-link action-close">
+              <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Recibo
+            </a>
+            <?php endif; ?>
+          </div>
         </td>
       </tr>
       <?php endforeach; ?>

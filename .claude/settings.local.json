@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l \"E:/gestion_pos/app/Views/pagos/pagar.php\")",
+      "Bash(php -l \"E:/gestion_pos/app/Views/pagos/recibo.php\")",
+      "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/index.php\")",
+      "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/detalles.php\")",
+      "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/historial.php\")"
+    ]
+  }
+}

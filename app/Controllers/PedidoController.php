@@ -62,20 +62,19 @@ class PedidoController extends BaseController
      */
     public function index()
     {
-        // 1. Obtener todos los pedidos activos
-        $pedidos = $this->pedidoModel->getPedidosActivos();
-
-        // 2. Obtener conteo por tipo de pedido
-        $resumen = $this->pedidoModel->contarPedidosPorTipo();
+        $pedidos        = $this->pedidoModel->getPedidosActivos();
+        $resumen        = $this->pedidoModel->contarPedidosPorTipo();
+        $pendientesPago = $this->pedidoModel->getPedidosCerradosSinPago();
 
         return view('pedidos/index', [
-            'titulo' => 'Pedidos Activos',
-            'pedidos' => $pedidos,
-            'resumen' => $resumen,
-            'user' => [
+            'titulo'         => 'Pedidos Activos',
+            'pedidos'        => $pedidos,
+            'resumen'        => $resumen,
+            'pendientesPago' => $pendientesPago,
+            'user'           => [
                 'name' => session('nombre') ?? 'Administrador',
                 'role' => session('rol_nombre') ?? 'Admin',
-            ]
+            ],
         ]);
     }
 
@@ -213,14 +212,18 @@ class PedidoController extends BaseController
 
         $productosDisponibles = $this->productoModel->getProductosActivos();
 
+        $pagoModel = new \App\Models\PagoModel();
+        $pago      = $pagoModel->getPagoPorPedido($idPedido);
+
         return view('pedidos/detalles', [
-            'pedido' => $pedido,
-            'items' => $items,
+            'pedido'               => $pedido,
+            'items'                => $items,
             'productosDisponibles' => $productosDisponibles,
-            'user' => [
+            'pago'                 => $pago,
+            'user'                 => [
                 'name' => session('nombre') ?? 'Administrador',
                 'role' => session('rol_nombre') ?? 'Admin',
-            ]
+            ],
         ]);
     }
 
@@ -310,8 +313,8 @@ class PedidoController extends BaseController
             $this->mesaModel->update($pedido['id_mesa'], ['estado' => 'libre']);
         }
 
-        return redirect()->to('/pedidos')
-            ->with('success', 'Pedido cerrado exitosamente. Listo para cobrar.');
+        return redirect()->to('/pagos/pagar/' . $idPedido)
+            ->with('success', 'Pedido cerrado. Registrá el pago para finalizar.');
     }
 
     /**

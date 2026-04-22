@@ -97,4 +97,56 @@
   <?php endif; ?>
 </div>
 
+<?php if (!empty($pendientesPago)): ?>
+<div style="margin-top:1.5rem">
+  <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#b45309;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Pendientes de pago (<?= count($pendientesPago) ?>)
+  </div>
+  <div class="panel">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tipo / Mesa</th>
+          <th>Usuario</th>
+          <th>Cerrado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($pendientesPago as $p): ?>
+        <tr>
+          <td class="mono">#<?= str_pad($p['id_pedido'], 5, '0', STR_PAD_LEFT) ?></td>
+          <td>
+            <?php
+              $tipoBadge = match($p['tipo_pedido']) {
+                'mesa'     => 'badge-blue',
+                'barra'    => 'badge-violet',
+                'take_away'=> 'badge-green',
+                default    => 'badge-gray',
+              };
+              $tipoLabel = $p['tipo_pedido'] === 'take_away' ? 'Para llevar' : ucfirst($p['tipo_pedido']);
+            ?>
+            <span class="badge <?= $tipoBadge ?>"><?= $tipoLabel ?></span>
+            <?php if ($p['tipo_pedido'] === 'mesa'): ?>
+              <span style="font-size:12px;color:var(--text-secondary);margin-left:0.3rem">Mesa <?= $p['numero_mesa'] ?></span>
+            <?php endif; ?>
+          </td>
+          <td><?= esc($p['usuario_nombre']) ?></td>
+          <td class="mono" style="font-size:12px"><?= date('d/m/Y H:i', strtotime($p['fecha_cierre'])) ?></td>
+          <td>
+            <a href="/pagos/pagar/<?= $p['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
+              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Cobrar
+            </a>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+<?php endif; ?>
+
 <?= $this->endSection() ?>

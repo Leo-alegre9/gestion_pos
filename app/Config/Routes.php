@@ -52,6 +52,11 @@ $routes->post('pedidos/agregar-detalle/(:num)', 'PedidoController::agregarDetall
 $routes->post('pedidos/eliminar-detalle/(:num)/(:num)', 'PedidoController::eliminarDetalle/$1/$2');
 $routes->get('pedidos/historial', 'PedidoController::historial');
 
+/** Rutas para la gestión de pagos */
+$routes->get('pagos/pagar/(:num)', 'PagoController::pagar/$1');
+$routes->post('pagos/registrar/(:num)', 'PagoController::store/$1');
+$routes->get('pagos/recibo/(:num)', 'PagoController::recibo/$1');
+
 /** Rutas para la gestión de categorías */
 $routes->get('categorias', 'CategoriaController::index');
 $routes->get('categorias/crear', 'CategoriaController::create');

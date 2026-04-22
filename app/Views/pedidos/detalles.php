@@ -151,7 +151,7 @@
   </table>
 </div>
 
-<!-- Acciones -->
+<!-- Acciones del pedido -->
 <?php if (!$pedido['fecha_cierre']): ?>
 <div style="margin-top:1.25rem;display:flex;gap:0.75rem;align-items:center">
   <form method="post" action="/pedidos/cerrar/<?= $pedido['id_pedido'] ?>" onsubmit="return confirm('¿Cerrar el pedido #<?= str_pad($pedido['id_pedido'],5,'0',STR_PAD_LEFT) ?>? No podrás agregar más productos.')">
@@ -164,7 +164,41 @@
   <a href="/pedidos" class="btn-secondary">Volver</a>
 </div>
 <?php else: ?>
-<div style="margin-top:1.25rem">
+
+<!-- Sección de pago -->
+<?php if ($pago): ?>
+<div style="margin-top:1.5rem">
+  <div class="info-box" style="border-left-color:#22c55e;background:rgba(34,197,94,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem">
+    <div>
+      <div style="font-weight:600;color:#15803d;margin-bottom:0.15rem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:0.3rem"><polyline points="20 6 9 17 4 12"/></svg>
+        Pago registrado
+      </div>
+      <div style="font-size:12px;color:var(--text-tertiary)">
+        $<?= number_format((float)$pago['monto'], 2, ',', '.') ?> · <?= esc($pago['metodo_nombre']) ?> · <?= date('d/m/Y H:i', strtotime($pago['fecha_pago'])) ?>
+      </div>
+    </div>
+    <a href="/pagos/recibo/<?= $pago['id_pago'] ?>" class="action-link action-view">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Ver comprobante
+    </a>
+  </div>
+</div>
+<?php else: ?>
+<div style="margin-top:1.5rem">
+  <div class="info-box" style="border-left-color:#f59e0b;background:rgba(245,158,11,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem">
+    <div style="font-size:13px;color:#92400e">
+      <strong>Pago pendiente.</strong> Este pedido está cerrado pero aún no tiene pago registrado.
+    </div>
+    <a href="/pagos/pagar/<?= $pedido['id_pedido'] ?>" class="btn-primary" style="font-size:13px;padding:0.45rem 0.9rem">
+      <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Registrar pago
+    </a>
+  </div>
+</div>
+<?php endif; ?>
+
+<div style="margin-top:0.75rem">
   <a href="/pedidos/historial?fecha=<?= date('Y-m-d', strtotime($pedido['fecha_cierre'])) ?>" class="btn-ghost" style="margin-right:0.5rem">Ver historial del día</a>
   <a href="/pedidos" class="btn-secondary">← Volver a pedidos</a>
 </div>
