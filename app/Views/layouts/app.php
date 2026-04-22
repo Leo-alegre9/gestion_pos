@@ -50,6 +50,10 @@
       border-bottom: 1px solid var(--border);
       text-decoration: none;
       flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .sidebar-logo:hover {
+      opacity: 0.8;
     }
     .sidebar-logo-text {
       font-size: 13.5px;
@@ -82,10 +86,14 @@
       letter-spacing: 0.09em;
       text-transform: uppercase;
       color: var(--text-tertiary);
-      padding: 0.9rem 0.625rem 0.3rem;
+      padding: 1rem 0.625rem 0.35rem;
+      margin-top: 0.5rem;
+      border-top: 1px solid rgba(0,0,0,0.04);
     }
 
     .nav-item {
+      padding-left: 2.5rem !important;
+      width: 100%;
       display: flex;
       align-items: center;
       gap: 0.55rem;
@@ -95,26 +103,38 @@
       font-weight: 400;
       color: var(--text-secondary);
       text-decoration: none;
-      transition: background 0.12s, color 0.12s;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
       white-space: nowrap;
       position: relative;
+      border-left: 2px solid transparent;
+      margin-bottom: 0.25rem;
     }
     .nav-item svg {
       width: 15px; height: 15px;
       stroke: currentColor; fill: none;
       stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
       flex-shrink: 0;
+      opacity: 0.75;
+      transition: opacity 0.12s;
     }
     .nav-item:hover {
       background: var(--bg);
       color: var(--text-primary);
+      border-left-color: #7c3aed4d;
+    }
+    .nav-item:hover svg {
+      opacity: 1;
     }
     .nav-item.active {
       background: var(--purple-dim);
       color: var(--purple);
       font-weight: 500;
+      border-left-color: var(--purple);
     }
-    .nav-item.active svg { stroke: var(--purple); }
+    .nav-item.active svg { 
+      stroke: var(--purple);
+      opacity: 1;
+    }
 
     .nav-badge {
       margin-left: auto;
@@ -181,12 +201,18 @@
       padding: 0 1.5rem; gap: 1rem;
       background: var(--surface);
       position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
     }
     .topbar-hamburger {
       display: none;
       background: none; border: none; cursor: pointer;
       color: var(--text-secondary); padding: 4px;
       border-radius: var(--radius-sm);
+      transition: color 0.15s, background 0.15s;
+    }
+    .topbar-hamburger:hover {
+      background: var(--bg);
+      color: var(--text-primary);
     }
     .topbar-hamburger svg {
       width: 18px; height: 18px;
@@ -273,9 +299,10 @@
       border:none; border-radius:20px;
       font-size:12.5px; font-weight:500; font-family:'DM Sans',sans-serif;
       cursor:pointer; text-decoration:none;
-      transition:opacity 0.15s, box-shadow 0.15s;
+      transition:opacity 0.15s, box-shadow 0.15s, background 0.15s;
     }
     .btn-pill:hover { opacity:0.88; box-shadow:0 2px 8px rgba(124,58,237,0.3); }
+    .btn-pill:active { transform: scale(0.98); }
 
     .btn-ghost {
       display:inline-flex; align-items:center; gap:0.35rem;
@@ -284,7 +311,7 @@
       border:1px solid var(--border); border-radius:var(--radius-md);
       font-size:12.5px; font-weight:500; font-family:'DM Sans',sans-serif;
       cursor:pointer; text-decoration:none;
-      transition:background 0.12s, border-color 0.12s;
+      transition:background 0.12s, border-color 0.12s, color 0.12s;
     }
     .btn-ghost:hover { background:var(--bg); border-color:#d1d5db; color:var(--text-primary); }
 
@@ -426,88 +453,10 @@
   <?= $this->renderSection('page_styles') ?>
 </head>
 <body>
-<?php
-  $seg      = service('uri')->getSegment(1) ?: 'dashboard';
-  $userName = esc($user['name'] ?? session('nombre') ?? 'Usuario');
-  $userRole = esc($user['role'] ?? session('rol_nombre') ?? '');
-  $initials = strtoupper(mb_substr(strip_tags($userName), 0, 2));
-?>
 <div class="app-layout">
 
-  <!-- ─── Sidebar ─── -->
-  <aside class="sidebar" id="sidebar">
-    <a href="/dashboard" class="sidebar-logo">
-      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
-        <defs>
-          <radialGradient id="sg" cx="35%" cy="35%">
-            <stop offset="0%" stop-color="#9f7aea"/>
-            <stop offset="50%" stop-color="#7c3aed"/>
-            <stop offset="100%" stop-color="#5b21b6"/>
-          </radialGradient>
-          <radialGradient id="ss" cx="35%" cy="35%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-            <stop offset="50%" stop-color="#ffffff" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <circle cx="20" cy="20" r="18" fill="url(#sg)"/>
-        <circle cx="14" cy="12" r="8" fill="url(#ss)"/>
-        <circle cx="20" cy="20" r="18" fill="none" stroke="#4c1d95" stroke-width="1" opacity="0.3"/>
-      </svg>
-      <div>
-        <div class="sidebar-logo-text">Gestion_POS</div>
-        <span class="sidebar-logo-sub">Panel de gestión</span>
-      </div>
-    </a>
-
-    <nav class="sidebar-nav">
-
-      <a href="/dashboard" class="nav-item <?= $seg === 'dashboard' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboard
-      </a>
-
-      <a href="/mesas" class="nav-item <?= $seg === 'mesas' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-        Mesas
-      </a>
-
-      <a href="/pedidos" class="nav-item <?= $seg === 'pedidos' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-        Pedidos
-      </a>
-
-      <div class="nav-section">Catálogo</div>
-
-      <a href="/productos" class="nav-item <?= $seg === 'productos' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-        Productos
-      </a>
-
-      <a href="/categorias" class="nav-item <?= $seg === 'categorias' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-        Categorías
-      </a>
-
-      <a href="/inventario" class="nav-item <?= $seg === 'inventario' ? 'active' : '' ?>">
-        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Inventario
-      </a>
-
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="user-avatar"><?= $initials ?></div>
-        <div class="user-info">
-          <div class="user-name"><?= $userName ?></div>
-          <div class="user-role"><?= $userRole ?></div>
-        </div>
-        <a href="/auth/logout" class="logout-btn" title="Cerrar sesión">
-          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </a>
-      </div>
-    </div>
-  </aside>
+  <!-- ─── Sidebar Unificado ─── -->
+  <?= $this->include('components/sidebar') ?>
 
   <!-- overlay móvil -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
