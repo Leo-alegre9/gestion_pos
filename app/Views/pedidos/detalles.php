@@ -229,7 +229,7 @@
 
       <div class="form-group">
         <label for="modal-cantidad" class="form-label">Cantidad <span class="req">*</span></label>
-        <input type="number" name="cantidad" id="modal-cantidad" class="form-control" value="1" min="0.5" step="0.5" required oninput="modalPrecioPreview()">
+        <input type="number" name="cantidad" id="modal-cantidad" class="form-control" value="1" min="1" step="1" required oninput="modalPrecioPreview()">
       </div>
 
       <div class="form-group" style="margin-bottom:0">
