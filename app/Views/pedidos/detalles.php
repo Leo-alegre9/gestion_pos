@@ -114,7 +114,7 @@
                 <div style="font-size:11.5px;color:var(--text-tertiary)"><?= esc($item['observaciones']) ?></div>
               <?php endif; ?>
             </td>
-            <td class="mono" style="text-align:center"><?= number_format((float)$item['cantidad'], 0, ',', '.') ?></td>
+            <td class="mono" style="text-align:center"><?= number_format((int)$item['cantidad'], 0, ',', '.') ?></td>
             <td class="mono" style="text-align:right;color:var(--text-secondary)">$<?= number_format((float)$item['precio_unitario'], 1, ',', '.') ?></td>
             <td class="mono" style="text-align:right;font-weight:500;color:var(--text-primary)">$<?= number_format((float)$item['subtotal'], 1, ',', '.') ?></td>
             <?php if (!$pedido['fecha_cierre']): ?>
@@ -248,7 +248,7 @@
 <script>
 function modalPrecioPreview() {
   var sel  = document.getElementById('modal-id-producto');
-  var qty  = parseFloat(document.getElementById('modal-cantidad').value) || 1;
+  var qty  = parseInt(document.getElementById('modal-cantidad').value, 10) || 1;
   var prev = document.getElementById('modal-precio-preview');
   if (!sel.value) { prev.textContent = ''; return; }
   var precio   = parseFloat(sel.options[sel.selectedIndex].getAttribute('data-precio'));
