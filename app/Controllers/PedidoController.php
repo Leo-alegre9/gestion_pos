@@ -155,7 +155,7 @@ class PedidoController extends BaseController
         $items = $this->request->getPost('items') ?? [];
         foreach ($items as $item) {
             $idProducto = (int)($item['id_producto'] ?? 0);
-            $cantidad   = (float)($item['cantidad']   ?? 0);
+            $cantidad   = (int)($item['cantidad']   ?? 0);
             if ($idProducto <= 0 || $cantidad <= 0) continue;
 
             $producto = $this->productoModel->find($idProducto);
@@ -234,8 +234,8 @@ class PedidoController extends BaseController
             return redirect()->back()->with('error', 'Pedido no válido o ya está cerrado.');
         }
 
-        $idProducto = $this->request->getPost('id_producto');
-        $cantidad = $this->request->getPost('cantidad');
+        $idProducto = (int)$this->request->getPost('id_producto');
+        $cantidad = (int)$this->request->getPost('cantidad');
 
         $producto = $this->productoModel->find($idProducto);
         if (!$producto) {
