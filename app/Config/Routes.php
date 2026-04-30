@@ -53,7 +53,7 @@ $routes->post('pedidos/eliminar-detalle/(:num)/(:num)', 'PedidoController::elimi
 $routes->get('pedidos/historial', 'PedidoController::historial');
 
 /** Rutas para la gestión de pagos */
-$routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1');
+$routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1'); //aca comienza el flujo de pago
 $routes->post('pagos/procesar/(:num)',   'PagoController::procesarRegistroDePago/$1');
 $routes->get('pagos/comprobante/(:num)', 'PagoController::mostrarComprobanteDePago/$1');
 

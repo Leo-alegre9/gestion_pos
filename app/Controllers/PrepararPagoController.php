@@ -55,19 +55,13 @@ class PrepararPagoController extends BaseController
     {
         // 1. Validar pedido
         if (!$this->esPedidoAptoPagoParaPago($idPedido)) {
-            return $this->respuestaError(
-                session()->getFlashdata('error'),
-                '/pedidos'
-            );
+            return $this->respuestaError(session()->getFlashdata('error'),'/pedidos');
         }
 
         // 2. Detectar pago previo
         $pagoExistente = $this->buscarPagoYaRegistrado($idPedido);
         if ($pagoExistente) {
-            return $this->respuestaError(
-                null,
-                '/pagos/comprobante/' . $pagoExistente['id_pago']
-            );
+            return $this->respuestaError(null,'/pagos/comprobante/' . $pagoExistente['id_pago']);
         }
 
         // 3. Recopilar datos para el formulario
