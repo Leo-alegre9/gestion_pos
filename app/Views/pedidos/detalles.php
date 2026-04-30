@@ -178,7 +178,7 @@
         $<?= number_format((float)$pago['monto'], 1, ',', '.') ?> · <?= esc($pago['metodo_nombre']) ?> · <?= date('d/m/Y H:i', strtotime($pago['fecha_pago'])) ?>
       </div>
     </div>
-    <a href="/pagos/recibo/<?= $pago['id_pago'] ?>" class="action-link action-view">
+    <a href="/pagos/comprobante/<?= $pago['id_pago'] ?>" class="action-link action-view">
       <svg class="icon-sm" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       Ver comprobante
     </a>
@@ -190,7 +190,7 @@
     <div style="font-size:13px;color:#92400e">
       <strong>Pago pendiente.</strong> Este pedido está cerrado pero aún no tiene pago registrado.
     </div>
-    <a href="/pagos/pagar/<?= $pedido['id_pedido'] ?>" class="btn-primary" style="font-size:13px;padding:0.45rem 0.9rem">
+    <a href="/pagos/formulario/<?= $pedido['id_pedido'] ?>" class="btn-primary" style="font-size:13px;padding:0.45rem 0.9rem">
       <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       Registrar pago
     </a>

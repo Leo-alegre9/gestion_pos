@@ -53,9 +53,9 @@ $routes->post('pedidos/eliminar-detalle/(:num)/(:num)', 'PedidoController::elimi
 $routes->get('pedidos/historial', 'PedidoController::historial');
 
 /** Rutas para la gestión de pagos */
-$routes->get('pagos/pagar/(:num)', 'PagoController::pagar/$1');
-$routes->post('pagos/registrar/(:num)', 'PagoController::store/$1');
-$routes->get('pagos/recibo/(:num)', 'PagoController::recibo/$1');
+$routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1');
+$routes->post('pagos/procesar/(:num)',   'PagoController::procesarRegistroDePago/$1');
+$routes->get('pagos/comprobante/(:num)', 'PagoController::mostrarComprobanteDePago/$1');
 
 /** Rutas de facturación */
 $routes->get('facturacion', 'FacturacionController::index');

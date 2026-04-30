@@ -1,0 +1,63 @@
+@startuml Flujo de Pago - BarPOS
+!theme plain
+skinparam BackgroundColor #f8f8f8
+skinparam DefaultFontSize 11
+skinparam SequenceMessageAlign left
+skinparam LifeLineBackgroundColor #e8f4f8
+
+actor "Usuario autenticado" as cajero
+participant "Interfaz" as browser
+participant "PagoController" as PagoCtrl
+participant "PrepararPagoController" as PrepCtrl
+participant "RegistrarPagoController" as RegCtrl
+participant "PedidoModel" as PedidoM
+participant "DetallePedidoModel" as DetalleM
+participant "PagoModel" as PagoM
+participant "MetodoPagoModel" as MetodoM
+
+== FASE 0: CIERRE DE PEDIDO ==
+
+cajero -> browser: Cierra el pedido #12
+browser -> PagoCtrl: Redirige al formulario de pago del pedido #12
+
+== FASE 1: MOSTRAR FORMULARIO ==
+
+browser -> PagoCtrl: Solicita formulario de pago del pedido #12
+PagoCtrl -> PrepCtrl: preparar(12)
+PrepCtrl -> PedidoM: getPedidoConDetalles(12)
+PedidoM --> PrepCtrl: pedido cerrado ✓
+PrepCtrl -> PagoM: getPagoPorPedido(12)
+PagoM --> PrepCtrl: sin pago previo ✓
+PrepCtrl -> DetalleM: getDetallesPorPedido(12)
+DetalleM --> PrepCtrl: items[]
+PrepCtrl -> MetodoM: getActivos()
+MetodoM --> PrepCtrl: metodos[]
+PrepCtrl --> PagoCtrl: {pedido, items, total: $24.50, metodos}
+PagoCtrl -> browser: Muestra formulario de pago
+
+== FASE 2: REGISTRAR PAGO ==
+
+cajero -> browser: Selecciona "Tarjeta" y confirma
+browser -> PagoCtrl: Envía método de pago del pedido #12
+PagoCtrl -> RegCtrl: store(12)
+RegCtrl -> PedidoM: Valida pedido cerrado y sin pago
+RegCtrl -> DetalleM: Obtiene detalles del pedido
+note over RegCtrl: Calcula total = Σ(subtotales) = $24.50
+RegCtrl -> PagoM: Guarda pago (método: Tarjeta, monto: $24.50)
+PagoM --> RegCtrl: id_pago = 45
+RegCtrl -> PedidoM: Marca pedido como pagado
+RegCtrl --> PagoCtrl: Redirige al comprobante del pago #45
+PagoCtrl -> browser: Redirige al comprobante del pago #45
+
+== FASE 3: COMPROBANTE ==
+
+browser -> PagoCtrl: Solicita comprobante del pago #45
+PagoCtrl -> PagoM: getPagoConMetodo(45)
+PagoM --> PagoCtrl: pago con método ✓
+PagoCtrl -> DetalleM: Obtiene ítems del pedido
+DetalleM --> PagoCtrl: items[]
+PagoCtrl -> browser: Muestra comprobante de pago
+
+browser --> cajero: Pago #45 registrado\n$24.50 · Tarjeta · 2026-04-30
+
+@enduml

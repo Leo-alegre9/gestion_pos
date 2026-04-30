@@ -313,7 +313,7 @@ class PedidoController extends BaseController
             $this->mesaModel->update($pedido['id_mesa'], ['estado' => 'libre']);
         }
 
-        return redirect()->to('/pagos/pagar/' . $idPedido)
+        return redirect()->to('/pagos/formulario/' . $idPedido)
             ->with('success', 'Pedido cerrado. Registrá el pago para finalizar.');
     }
 

@@ -136,7 +136,7 @@
           <td><?= esc($p['usuario_nombre']) ?></td>
           <td class="mono" style="font-size:12px"><?= date('d/m/Y H:i', strtotime($p['fecha_cierre'])) ?></td>
           <td>
-            <a href="/pagos/pagar/<?= $p['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
+            <a href="/pagos/formulario/<?= $p['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
               <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               Cobrar
             </a>

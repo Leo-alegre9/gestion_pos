@@ -131,7 +131,7 @@
         </div>
       <?php else: ?>
 
-      <form method="post" action="/pagos/registrar/<?= $pedido['id_pedido'] ?>" id="form-pago">
+      <form method="post" action="/pagos/procesar/<?= $pedido['id_pedido'] ?>" id="form-pago">
         <?= csrf_field() ?>
 
         <!-- Método de pago -->

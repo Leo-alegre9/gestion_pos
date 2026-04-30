@@ -77,12 +77,12 @@
               Ver
             </a>
             <?php if (empty($pedido['id_pago'])): ?>
-            <a href="/pagos/pagar/<?= $pedido['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
+            <a href="/pagos/formulario/<?= $pedido['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
               <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               Cobrar
             </a>
             <?php else: ?>
-            <a href="/pagos/recibo/<?= $pedido['id_pago'] ?>" class="action-link action-close">
+            <a href="/pagos/comprobante/<?= $pedido['id_pago'] ?>" class="action-link action-close">
               <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               Recibo
             </a>
