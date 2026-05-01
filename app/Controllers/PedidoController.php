@@ -313,8 +313,44 @@ class PedidoController extends BaseController
             $this->mesaModel->update($pedido['id_mesa'], ['estado' => 'libre']);
         }
 
-        return redirect()->to('/pagos/formulario/' . $idPedido)
-            ->with('success', 'Pedido cerrado. Registrá el pago para finalizar.');
+        return redirect()->to('/pedidos/detalles/' . $idPedido)
+            ->with('success', 'Pedido cerrado correctamente.');
+    }
+
+    /**
+     * Reabre un pedido cerrado siempre que no tenga pago registrado.
+     *
+     * @param int $idPedido ID del pedido a reabrir.
+     * @return \CodeIgniter\HTTP\RedirectResponse
+     */
+    public function reabrir(int $idPedido)
+    {
+        $pedido = $this->pedidoModel->find($idPedido);
+        if (!$pedido) {
+            return redirect()->back()->with('error', 'El pedido no existe.');
+        }
+
+        if ($pedido['fecha_cierre'] === null) {
+            return redirect()->back()->with('error', 'El pedido ya está abierto.');
+        }
+
+        $pagoModel = new \App\Models\PagoModel();
+        if ($pagoModel->getPagoPorPedido($idPedido)) {
+            return redirect()->back()->with('error', 'No se puede reabrir un pedido que ya tiene pago registrado.');
+        }
+
+        $idEstadoAbierto = $this->getEstadoId('abierto');
+        $this->pedidoModel->update($idPedido, [
+            'fecha_cierre'     => null,
+            'id_estado_pedido' => $idEstadoAbierto,
+        ]);
+
+        if ($pedido['id_mesa']) {
+            $this->mesaModel->update($pedido['id_mesa'], ['estado' => 'ocupada']);
+        }
+
+        return redirect()->to('/pedidos/detalles/' . $idPedido)
+            ->with('success', 'Pedido reabierto. Podés seguir agregando productos.');
     }
 
     /**

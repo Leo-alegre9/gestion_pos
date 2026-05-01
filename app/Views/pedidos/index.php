@@ -136,10 +136,19 @@
           <td><?= esc($p['usuario_nombre']) ?></td>
           <td class="mono" style="font-size:12px"><?= date('d/m/Y H:i', strtotime($p['fecha_cierre'])) ?></td>
           <td>
-            <a href="/pagos/formulario/<?= $p['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
-              <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              Cobrar
-            </a>
+            <div style="display:flex;gap:0.4rem;align-items:center">
+              <a href="/pagos/formulario/<?= $p['id_pedido'] ?>" class="action-link" style="background:rgba(245,158,11,0.1);color:#b45309">
+                <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Cobrar
+              </a>
+              <form method="post" action="/pedidos/reabrir/<?= $p['id_pedido'] ?>" style="display:inline" onsubmit="return confirm('¿Reabrir el pedido #<?= str_pad($p['id_pedido'],5,'0',STR_PAD_LEFT) ?>?')">
+                <?= csrf_field() ?>
+                <button type="submit" class="action-link action-view">
+                  <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.89"/></svg>
+                  Reabrir
+                </button>
+              </form>
+            </div>
           </td>
         </tr>
         <?php endforeach; ?>

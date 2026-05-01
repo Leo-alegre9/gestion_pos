@@ -3,208 +3,133 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\PedidoModel;
-use App\Models\PagoModel;
-use App\Models\DetallePedidoModel;
 
 /**
  * PagoController
  *
- * Capa HTTP del módulo de pagos. Es el único punto de entrada de las rutas de pagos.
- * No contiene lógica de negocio: delega la preparación al PrepararPagoController
- * y el registro al RegistrarPagoController. Su única responsabilidad es
- * coordinar la respuesta HTTP (renderizar vistas o redirigir).
+ * Adaptador HTTP del módulo de pagos.
+ * Responsabilidad única: leer la entrada HTTP, delegar en los servicios
+ * y convertir el resultado en redirect o view.
+ *
+ * Expone tres rutas HTTP:
+ *   GET  pagos/formulario/{idPedido}  →  mostrarFormularioDePago()
+ *   POST pagos/procesar/{idPedido}    →  procesarRegistroDePago()
+ *   GET  pagos/comprobante/{idPago}   →  mostrarComprobanteDePago()
+ *
+ * La lógica de negocio vive en App\Services\PrepararPagoService,
+ * App\Services\RegistrarPagoService y App\Services\ComprobanteService.
  */
 class PagoController extends BaseController
 {
-    protected PedidoModel $pedidoModel;
-    protected PagoModel $pagoModel;
-    protected DetallePedidoModel $detallePedidoModel;
-    protected PrepararPagoController $prepararPago;
-    protected RegistrarPagoController $registrarPago;
-
-    public function __construct()
-    {
-        $this->pedidoModel        = new PedidoModel();
-        $this->pagoModel          = new PagoModel();
-        $this->detallePedidoModel = new DetallePedidoModel();
-        $this->prepararPago       = new PrepararPagoController();
-        $this->registrarPago      = new RegistrarPagoController();
-    }
-
-    // =========================================================================
-    // RUTAS PÚBLICAS  (HTTP entry points)
-    // =========================================================================
-
     /**
      * [GET] pagos/formulario/{idPedido}
      *
-     * Muestra el formulario de pago para un pedido cerrado.
+     * Delega en PrepararPagoService::preparar() la validación y los datos.
      *
-     * Flujo:
-     *   1. Delega la validación y la recopilación de datos al PrepararPagoController.
-     *   2. Si la preparación falla (pedido inexistente, abierto o ya pagado),
-     *      redirige al destino indicado por el preparador.
-     *   3. Si la preparación es exitosa, renderiza el formulario con todos
-     *      los datos del pedido, sus ítems, el total y los métodos de pago.
+     * Cursos alternativos:
+     *   — Si el pedido ya fue pagado, redirige al comprobante existente.
+     *   — Si el pedido no es válido, redirige a /pedidos con mensaje de error.
+     *
+     * Curso normal:
+     *   — Renderiza el formulario de pago con pedido, ítems, total y métodos.
      *
      * @param int $idPedido ID del pedido cerrado que se desea pagar.
      */
     public function mostrarFormularioDePago(int $idPedido)
     {
-        $resultado = $this->prepararPago->preparar($idPedido);
+        //1. Preparacion del pago -- CURSO NORMAL
+        $resultado = service('prepararPago')->preparar($idPedido);
 
-        if (!$resultado['success']) {
-            return redirect()->to($resultado['redirect'])->with('error', $resultado['error']);
+        //1.1. Manejo de cursos alternativos -- CURSO ALTERNATIVO
+        if ($resultado['pagoExistenteId']) {
+            return redirect()->to('/pagos/comprobante/' . $resultado['pagoExistenteId']);
         }
 
-        return view('pagos/pagar', $this->construirDatosParaVistaDePago($resultado['data']));
+        //1.2. Manejo de errores -- CURSO ALTERNATIVO
+        if (!$resultado['ok']) {
+            return redirect()->to('/pedidos')->with('error', $resultado['error']);
+        }
+
+        //2. Renderizado de formulario -- CURSO NORMAL
+        $d = $resultado['data'];
+        return view('pagos/pagar', [
+            'titulo'  => 'Registrar Pago',
+            'pedido'  => $d['pedido'],
+            'items'   => $d['items'],
+            'total'   => $d['total'],
+            'metodos' => $d['metodos'],
+            'user'    => [
+                'name' => session('nombre')     ?? 'Administrador',
+                'role' => session('rol_nombre') ?? 'Admin',
+            ],
+        ]);
     }
 
     /**
      * [POST] pagos/procesar/{idPedido}
      *
-     * Procesa el registro del pago de un pedido.
-     * Delega toda la lógica de negocio al RegistrarPagoController
-     * y retransmite su respuesta HTTP tal cual.
+     * Lee el método de pago del request y delega en RegistrarPagoService::registrar().
+     *
+     * Cursos alternativos:
+     *   — Si el pedido ya fue pagado, redirige al comprobante existente.
+     *   — Si la validación falla, regresa al formulario con los errores.
+     *   — Si el pedido no es válido, redirige a /pedidos con mensaje de error.
+     *
+     * Curso normal:
+     *   — Redirige al comprobante del pago recién registrado.
      *
      * @param int $idPedido ID del pedido que se está pagando.
      */
     public function procesarRegistroDePago(int $idPedido)
     {
-        return $this->registrarPago->store($idPedido);
+        $idMetodoPago = (int) $this->request->getPost('id_metodo_pago');
+        $resultado    = service('registrarPago')->registrar($idPedido, $idMetodoPago);
+
+        // Manejo de cursos alternativos -- CURSO ALTERNATIVO
+        if ($resultado['pagoExistenteId']) {
+            return redirect()->to('/pagos/comprobante/' . $resultado['pagoExistenteId']);
+        }
+
+        // Manejo de validación fallida -- CURSO ALTERNATIVO
+        if (!$resultado['ok'] && $resultado['errors']) {
+            return redirect()->back()->withInput()->with('errors', $resultado['errors']);
+        }
+
+        // Manejo de pedido no válido -- CURSO ALTERNATIVO
+        if (!$resultado['ok']) {
+            return redirect()->to('/pedidos')->with('error', $resultado['error']);
+        }
+
+        // Redirección al comprobante del pago registrado -- CURSO NORMAL
+        return redirect()->to('/pagos/comprobante/' . $resultado['idPago'])
+            ->with('success', 'Pago registrado correctamente.');
     }
 
     /**
      * [GET] pagos/comprobante/{idPago}
      *
-     * Muestra el comprobante de un pago registrado.
-     *
-     * Flujo:
-     *   1. Busca el pago por su ID (incluye nombre del método de pago).
-     *   2. Carga las líneas de detalle del pedido asociado (con nombre de producto).
-     *   3. Calcula el total sumando los subtotales de cada línea.
-     *   4. Carga los datos generales del pedido.
-     *   5. Renderiza la vista del comprobante.
+     * Delega en ComprobanteService::obtenerDatos() y renderiza el recibo.
      *
      * @param int $idPago ID del pago del que se quiere mostrar el comprobante.
      */
     public function mostrarComprobanteDePago(int $idPago)
     {
-        $pago = $this->buscarPagoPorId($idPago);
-        if (!$pago) {
+        $resultado = service('comprobante')->obtenerDatos($idPago);
+
+        if (!$resultado['ok']) {
             return redirect()->to('/pedidos')->with('error', 'Comprobante no encontrado.');
         }
 
-        $items  = $this->cargarItemsDelPedidoConNombreProducto($pago['id_pedido']);
-        $total  = $this->sumarSubtotalesDeItems($items);
-        $pedido = $this->pedidoModel->getPedidoConDetalles($pago['id_pedido']);
-
-        return view('pagos/recibo', $this->construirDatosParaVistaDeComprobante($pago, $pedido, $items, $total));
-    }
-
-    // =========================================================================
-    // APOYO PARA mostrarFormularioDePago
-    // =========================================================================
-
-    /**
-     * Construye el array de datos que la vista `pagos/pagar` necesita,
-     * añadiendo el título de la página y los datos del usuario en sesión.
-     *
-     * @param array $datos Datos preparados por PrepararPagoController::preparar().
-     *                     Contiene: 'pedido', 'items', 'total', 'metodos'.
-     * @return array Array listo para ser pasado a view().
-     */
-    private function construirDatosParaVistaDePago(array $datos): array
-    {
-        return [
-            'titulo'  => 'Registrar Pago',
-            'pedido'  => $datos['pedido'],
-            'items'   => $datos['items'],
-            'total'   => $datos['total'],
-            'metodos' => $datos['metodos'],
-            'user'    => $this->obtenerDatosDeUsuarioEnSesion(),
-        ];
-    }
-
-    // =========================================================================
-    // APOYO PARA mostrarComprobanteDePago
-    // =========================================================================
-
-    /**
-     * Busca un pago por su ID incluyendo el nombre del método de pago (JOIN).
-     *
-     * @param int $idPago ID del pago a buscar.
-     * @return array|null Datos del pago con 'metodo_nombre', o null si no existe.
-     */
-    private function buscarPagoPorId(int $idPago): ?array
-    {
-        return $this->pagoModel->getPagoConMetodo($idPago);
-    }
-
-    /**
-     * Carga todas las líneas de detalle de un pedido enriquecidas con
-     * el nombre del producto correspondiente (JOIN con `productos`).
-     *
-     * @param int $idPedido ID del pedido cuyos ítems se quieren cargar.
-     * @return array Lista de líneas de detalle con el campo `nombre` del producto.
-     */
-    private function cargarItemsDelPedidoConNombreProducto(int $idPedido): array
-    {
-        return $this->detallePedidoModel
-            ->select('detalle_pedidos.*, productos.nombre', false)
-            ->join('productos', 'productos.id_producto = detalle_pedidos.id_producto')
-            ->where('detalle_pedidos.id_pedido', $idPedido)
-            ->findAll();
-    }
-
-    /**
-     * Calcula el importe total sumando el campo `subtotal` de cada ítem.
-     *
-     * @param array $items Lista de ítems, cada uno con el campo `subtotal`.
-     * @return float Suma de todos los subtotales.
-     */
-    private function sumarSubtotalesDeItems(array $items): float
-    {
-        return (float) array_sum(array_column($items, 'subtotal'));
-    }
-
-    /**
-     * Construye el array de datos que la vista `pagos/recibo` necesita.
-     *
-     * @param array $pago   Datos del pago (con método de pago).
-     * @param array $pedido Datos del pedido asociado.
-     * @param array $items  Líneas de detalle del pedido.
-     * @param float $total  Total calculado desde los subtotales.
-     * @return array Array listo para ser pasado a view().
-     */
-    private function construirDatosParaVistaDeComprobante(array $pago, array $pedido, array $items, float $total): array
-    {
-        return [
+        return view('pagos/recibo', [
             'titulo' => 'Comprobante de Pago',
-            'pago'   => $pago,
-            'pedido' => $pedido,
-            'items'  => $items,
-            'total'  => $total,
-            'user'   => $this->obtenerDatosDeUsuarioEnSesion(),
-        ];
-    }
-
-    // =========================================================================
-    // UTILIDADES COMUNES
-    // =========================================================================
-
-    /**
-     * Lee el nombre y rol del usuario autenticado desde la sesión PHP.
-     * Devuelve valores por defecto si la sesión no tiene datos (ej. desarrollo).
-     *
-     * @return array Con keys 'name' (string) y 'role' (string).
-     */
-    private function obtenerDatosDeUsuarioEnSesion(): array
-    {
-        return [
-            'name' => session('nombre')    ?? 'Administrador',
-            'role' => session('rol_nombre') ?? 'Admin',
-        ];
+            'pago'   => $resultado['pago'],
+            'pedido' => $resultado['pedido'],
+            'items'  => $resultado['items'],
+            'total'  => $resultado['total'],
+            'user'   => [
+                'name' => session('nombre')     ?? 'Administrador',
+                'role' => session('rol_nombre') ?? 'Admin',
+            ],
+        ]);
     }
 }

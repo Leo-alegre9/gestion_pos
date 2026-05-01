@@ -7,9 +7,11 @@ skinparam LifeLineBackgroundColor #e8f4f8
 
 actor "Usuario autenticado" as cajero
 participant "Interfaz" as browser
-participant "PagoController" as PagoCtrl
 participant "PrepararPagoController" as PrepCtrl
-participant "RegistrarPagoController" as RegCtrl
+participant "PagoController" as PagoCtrl
+participant "PrepararPagoService" as PrepSvc
+participant "RegistrarPagoService" as RegSvc
+participant "ComprobanteService" as CompSvc
 participant "PedidoModel" as PedidoM
 participant "DetallePedidoModel" as DetalleM
 participant "PagoModel" as PagoM
@@ -18,46 +20,74 @@ participant "MetodoPagoModel" as MetodoM
 == FASE 0: CIERRE DE PEDIDO ==
 
 cajero -> browser: Cierra el pedido #12
-browser -> PagoCtrl: Redirige al formulario de pago del pedido #12
+browser -> browser: Permanece en /pedidos/detalles/12\nmuestra botón "Registrar pago"
 
 == FASE 1: MOSTRAR FORMULARIO ==
 
-browser -> PagoCtrl: Solicita formulario de pago del pedido #12
-PagoCtrl -> PrepCtrl: preparar(12)
-PrepCtrl -> PedidoM: getPedidoConDetalles(12)
-PedidoM --> PrepCtrl: pedido cerrado ✓
-PrepCtrl -> PagoM: getPagoPorPedido(12)
-PagoM --> PrepCtrl: sin pago previo ✓
-PrepCtrl -> DetalleM: getDetallesPorPedido(12)
-DetalleM --> PrepCtrl: items[]
-PrepCtrl -> MetodoM: getActivos()
-MetodoM --> PrepCtrl: metodos[]
-PrepCtrl --> PagoCtrl: {pedido, items, total: $24.50, metodos}
-PagoCtrl -> browser: Muestra formulario de pago
+cajero -> browser: Clic en "Registrar pago"
+browser -> PrepCtrl: GET /pagos/formulario/12
+PrepCtrl -> PrepSvc: preparar(12)
+
+PrepSvc -> PedidoM: getPedidoConDetalles(12)
+PedidoM --> PrepSvc: pedido cerrado ✓
+
+PrepSvc -> PagoM: getPagoPorPedido(12)
+PagoM --> PrepSvc: sin pago previo ✓
+
+PrepSvc -> DetalleM: getDetallesPorPedido(12)
+DetalleM --> PrepSvc: items[]
+
+PrepSvc -> MetodoM: getActivos()
+MetodoM --> PrepSvc: metodos[]
+
+PrepSvc --> PrepCtrl: {ok: true, data: {pedido, items, total: $24.50, metodos}}
+PrepCtrl -> browser: view('pagos/pagar', datos)
 
 == FASE 2: REGISTRAR PAGO ==
 
 cajero -> browser: Selecciona "Tarjeta" y confirma
-browser -> PagoCtrl: Envía método de pago del pedido #12
-PagoCtrl -> RegCtrl: store(12)
-RegCtrl -> PedidoM: Valida pedido cerrado y sin pago
-RegCtrl -> DetalleM: Obtiene detalles del pedido
-note over RegCtrl: Calcula total = Σ(subtotales) = $24.50
-RegCtrl -> PagoM: Guarda pago (método: Tarjeta, monto: $24.50)
-PagoM --> RegCtrl: id_pago = 45
-RegCtrl -> PedidoM: Marca pedido como pagado
-RegCtrl --> PagoCtrl: Redirige al comprobante del pago #45
-PagoCtrl -> browser: Redirige al comprobante del pago #45
+browser -> PagoCtrl: POST /pagos/procesar/12  {id_metodo_pago: 2}
+PagoCtrl -> RegSvc: registrar(12, 2)
+
+RegSvc -> PedidoM: find(12)
+PedidoM --> RegSvc: pedido cerrado ✓
+
+RegSvc -> PagoM: getPagoPorPedido(12)
+PagoM --> RegSvc: sin pago previo ✓
+
+RegSvc -> DetalleM: getDetallesPorPedido(12)
+DetalleM --> RegSvc: detalles[]
+note over RegSvc: total = Σ(subtotales) = $24.50\n(calculado server-side, no del formulario)
+
+RegSvc -> PagoM: validate(registro)
+PagoM --> RegSvc: válido ✓
+
+note over RegSvc: transStart()
+RegSvc -> PagoM: insert({pedido:12, metodo:2, monto:24.50, fecha})
+PagoM --> RegSvc: id_pago = 45
+RegSvc -> PedidoM: update(12, {id_estado_pedido: 'pagado'})
+note over RegSvc: transComplete()
+
+RegSvc --> PagoCtrl: {ok: true, idPago: 45}
+PagoCtrl -> browser: redirect /pagos/comprobante/45
 
 == FASE 3: COMPROBANTE ==
 
-browser -> PagoCtrl: Solicita comprobante del pago #45
-PagoCtrl -> PagoM: getPagoConMetodo(45)
-PagoM --> PagoCtrl: pago con método ✓
-PagoCtrl -> DetalleM: Obtiene ítems del pedido
-DetalleM --> PagoCtrl: items[]
-PagoCtrl -> browser: Muestra comprobante de pago
+browser -> PagoCtrl: GET /pagos/comprobante/45
+PagoCtrl -> CompSvc: obtenerDatos(45)
 
-browser --> cajero: Pago #45 registrado\n$24.50 · Tarjeta · 2026-04-30
+CompSvc -> PagoM: getPagoConMetodo(45)
+PagoM --> CompSvc: pago con método ✓
+
+CompSvc -> DetalleM: getDetallesPorPedido(12)
+DetalleM --> CompSvc: items[]
+
+CompSvc -> PedidoM: getPedidoConDetalles(12)
+PedidoM --> CompSvc: pedido ✓
+
+CompSvc --> PagoCtrl: {ok: true, pago, pedido, items, total}
+PagoCtrl -> browser: view('pagos/recibo', datos)
+
+browser --> cajero: Pago #45 registrado\n$24.50 · Tarjeta · 2026-05-01
 
 @enduml

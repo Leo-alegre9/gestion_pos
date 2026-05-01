@@ -48,12 +48,13 @@ $routes->get('pedidos/crear', 'PedidoController::create');
 $routes->post('pedidos/guardar', 'PedidoController::store');
 $routes->get('pedidos/detalles/(:num)', 'PedidoController::show/$1');
 $routes->post('pedidos/cerrar/(:num)', 'PedidoController::cerrar/$1');
+$routes->post('pedidos/reabrir/(:num)', 'PedidoController::reabrir/$1');
 $routes->post('pedidos/agregar-detalle/(:num)', 'PedidoController::agregarDetalle/$1');
 $routes->post('pedidos/eliminar-detalle/(:num)/(:num)', 'PedidoController::eliminarDetalle/$1/$2');
 $routes->get('pedidos/historial', 'PedidoController::historial');
 
 /** Rutas para la gestión de pagos */
-$routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1'); //aca comienza el flujo de pago
+$routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1');
 $routes->post('pagos/procesar/(:num)',   'PagoController::procesarRegistroDePago/$1');
 $routes->get('pagos/comprobante/(:num)', 'PagoController::mostrarComprobanteDePago/$1');
 

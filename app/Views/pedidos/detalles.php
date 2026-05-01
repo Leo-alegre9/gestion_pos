@@ -190,10 +190,19 @@
     <div style="font-size:13px;color:#92400e">
       <strong>Pago pendiente.</strong> Este pedido está cerrado pero aún no tiene pago registrado.
     </div>
-    <a href="/pagos/formulario/<?= $pedido['id_pedido'] ?>" class="btn-primary" style="font-size:13px;padding:0.45rem 0.9rem">
-      <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      Registrar pago
-    </a>
+    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+      <form method="post" action="/pedidos/reabrir/<?= $pedido['id_pedido'] ?>" onsubmit="return confirm('¿Reabrir el pedido #<?= str_pad($pedido['id_pedido'],5,'0',STR_PAD_LEFT) ?>?')">
+        <?= csrf_field() ?>
+        <button type="submit" class="btn-secondary" style="font-size:13px;padding:0.45rem 0.9rem">
+          <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.89"/></svg>
+          Reabrir pedido
+        </button>
+      </form>
+      <a href="/pagos/formulario/<?= $pedido['id_pedido'] ?>" class="btn-primary" style="font-size:13px;padding:0.45rem 0.9rem">
+        <svg class="icon-sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Registrar pago
+      </a>
+    </div>
   </div>
 </div>
 <?php endif; ?>

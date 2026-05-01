@@ -7,26 +7,67 @@ use CodeIgniter\Config\BaseService;
 /**
  * Services Configuration file.
  *
- * Services are simply other classes/libraries that the system uses
- * to do its job. This is used by CodeIgniter to allow the core of the
- * framework to be swapped out easily without affecting the usage within
- * the rest of your application.
- *
- * This file holds any application-specific services, or service overrides
- * that you might need. An example has been included with the general
- * method format you should use for your service methods. For more examples,
- * see the core Services file at system/Config/Services.php.
+ * Registra las factories de los servicios de aplicación del módulo de pagos.
+ * Acceso desde controladores: service('prepararPago'), service('registrarPago'), service('comprobante').
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
+    /**
+     * Servicio de preparación del formulario de pago.
+     * Valida el pedido, detecta duplicados y recopila ítems y métodos de pago.
      *
-     *     return new \CodeIgniter\Example();
-     * }
+     * @see App\Services\PrepararPagoService
      */
+    public static function prepararPago(bool $getShared = true): \App\Services\PrepararPagoService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('prepararPago');
+        }
+
+        return new \App\Services\PrepararPagoService(
+            new \App\Models\PedidoModel(),
+            new \App\Models\PagoModel(),
+            new \App\Models\MetodoPagoModel(),
+            new \App\Models\DetallePedidoModel(),
+        );
+    }
+
+    /**
+     * Servicio de registro del pago.
+     * Calcula el total, persiste el pago y actualiza el estado del pedido
+     * dentro de una transacción.
+     *
+     * @see App\Services\RegistrarPagoService
+     */
+    public static function registrarPago(bool $getShared = true): \App\Services\RegistrarPagoService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('registrarPago');
+        }
+
+        return new \App\Services\RegistrarPagoService(
+            new \App\Models\PedidoModel(),
+            new \App\Models\PagoModel(),
+            new \App\Models\DetallePedidoModel(),
+        );
+    }
+
+    /**
+     * Servicio de comprobante de pago.
+     * Recopila pago, pedido e ítems para renderizar el recibo.
+     *
+     * @see App\Services\ComprobanteService
+     */
+    public static function comprobante(bool $getShared = true): \App\Services\ComprobanteService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('comprobante');
+        }
+
+        return new \App\Services\ComprobanteService(
+            new \App\Models\PagoModel(),
+            new \App\Models\PedidoModel(),
+            new \App\Models\DetallePedidoModel(),
+        );
+    }
 }
