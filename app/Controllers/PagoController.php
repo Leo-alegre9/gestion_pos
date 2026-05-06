@@ -85,21 +85,6 @@ class PagoController extends BaseController
         $idMetodoPago = (int) $this->request->getPost('id_metodo_pago');
         $resultado    = service('registrarPago')->registrar($idPedido, $idMetodoPago);
 
-        // Manejo de cursos alternativos -- CURSO ALTERNATIVO
-        if ($resultado['pagoExistenteId']) {
-            return redirect()->to('/pagos/comprobante/' . $resultado['pagoExistenteId']);
-        }
-
-        // Manejo de validación fallida -- CURSO ALTERNATIVO
-        if (!$resultado['ok'] && $resultado['errors']) {
-            return redirect()->back()->withInput()->with('errors', $resultado['errors']);
-        }
-
-        // Manejo de pedido no válido -- CURSO ALTERNATIVO
-        if (!$resultado['ok']) {
-            return redirect()->to('/pedidos')->with('error', $resultado['error']);
-        }
-
         // Redirección al comprobante del pago registrado -- CURSO NORMAL
         return redirect()->to('/pagos/comprobante/' . $resultado['idPago'])
             ->with('success', 'Pago registrado correctamente.');
