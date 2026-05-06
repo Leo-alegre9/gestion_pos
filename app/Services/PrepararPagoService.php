@@ -61,12 +61,9 @@ class PrepararPagoService
         // 1. Verificar que el pedido existe y está cerrado
         $pedido = $this->pedidoModel->getPedidoConDetalles($idPedido);
 
-        if (!$pedido) {
-            return $this->falla('El pedido no existe.');
-        }
-
-        if (!$pedido['fecha_cierre']) {
-            return $this->falla('El pedido debe cerrarse antes de registrar el pago.');
+        if (!$pedido || !$pedido['fecha_cierre']) {
+            return $this->falla(!$pedido ? 'El pedido no existe.' : 'El pedido debe cerrarse antes de registrar el pago.'
+            );
         }
 
         // 2. Detectar pago previo
