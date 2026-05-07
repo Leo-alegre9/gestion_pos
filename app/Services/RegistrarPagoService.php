@@ -59,29 +59,10 @@ class RegistrarPagoService
      */
     public function registrar(int $idPedido, int $idMetodoPago): array
     {
-        // 1. Validar que el pedido existe y está cerrado
-        $pedido = $this->pedidoModel->find($idPedido);
-        if (!$pedido || empty($pedido['fecha_cierre'])) {
-            return $this->falla('El pedido no es válido para registrar pago.');
-        }
-
-        // 2. Detectar pago duplicado
-        $pagoExistente = $this->pagoModel->getPagoPorPedido($idPedido);
-        if ($pagoExistente) {
-            return [
-                'ok'             => false,
-                'idPago'         => null,
-                'error'          => null,
-                'errors'         => null,
-                'pagoExistenteId'=> (int) $pagoExistente['id_pago'],
-            ];
-        }
-
-        // 3. Calcular total server-side desde los detalles del pedido
+        // 1. Calcular total server-side y construir los datos del registro
         $detalles = $this->detallePedidoModel->getDetallesPorPedido($idPedido);
         $total    = (float) array_sum(array_column($detalles, 'subtotal'));
 
-        // 4. Validar los datos del registro
         $registro = [
             'id_pedido'      => $idPedido,
             'id_metodo_pago' => $idMetodoPago,
@@ -89,17 +70,50 @@ class RegistrarPagoService
             'fecha_pago'     => date('Y-m-d H:i:s'),
         ];
 
-        if (!$this->pagoModel->validate($registro)) {
-            return [
-                'ok'             => false,
-                'idPago'         => null,
-                'error'          => null,
-                'errors'         => $this->pagoModel->errors(),
-                'pagoExistenteId'=> null,
-            ];
+        // 2. Validación de los datos del registro
+        $errorEnValidacion = $this->validarDatosRegistro($registro);
+
+        if ($errorEnValidacion !== null) {
+            return $errorEnValidacion;
         }
 
-        // 5. Persistir en transacción: insert pago + update estado pedido
+        // 5. Insertar el pago y actualizar el estado del pedido en la base de datos
+        return $this->persistirPago($registro, $idPedido);
+    }
+
+    // =========================================================================
+    // VALIDACIONES
+    // =========================================================================
+
+    /**
+     * Valida los datos del registro contra las reglas definidas en PagoModel.
+     * Retorna un array de falla con los errores del modelo, o null si es válido.
+     */
+    private function validarDatosRegistro(array $registro): ?array
+    {
+        if ($this->pagoModel->validate($registro)) {
+            return null;
+        }
+
+        return [
+            'ok'             => false,
+            'idPago'         => null,
+            'error'          => null,
+            'errors'         => $this->pagoModel->errors(),
+            'pagoExistenteId'=> null,
+        ];
+    }
+
+    // =========================================================================
+    // PERSISTENCIA
+    // =========================================================================
+
+    /**
+     * Inserta el pago en `pagos` y actualiza el estado del pedido
+     * dentro de una única transacción de base de datos.
+     */
+    private function persistirPago(array $registro, int $idPedido): array
+    {
         $idEstadoPagado = $this->obtenerOCrearEstado('pagado');
 
         $db = \Config\Database::connect();
