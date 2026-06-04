@@ -196,20 +196,6 @@ class UsuarioModel extends Model
         return $this->where('dni', $dni)->first() !== null;
     }
 
-    /**
-     * Verificar si el email existe excluyendo un usuario específico (útil en actualizaciones)
-     *
-     * @param string $email
-     * @param int    $excludeId
-     * @return bool
-     */
-    public function emailExisteExcluir(string $email, int $excludeId): bool
-    {
-        return $this->where('email', $email)
-                    ->where('id_usuario !=', $excludeId)
-                    ->first() !== null;
-    }
-
     // ========================================
     // MÉTODOS DE CONSULTA
     // ========================================
