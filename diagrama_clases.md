@@ -118,15 +118,15 @@ classDiagram
     }
     class PedidoController {
         <<Controller>>
-        +index() string
-        +create() string
-        +store()
-        +show(idPedido) string
+        +mostrarResumen() string
+        +crearPedido() string
+        +validarYguardarPedido()
+        +mostrarPedidoConDetalles(idPedido) string
         +agregarDetalle(idPedido)
         +eliminarDetalle(idPedido, idDetalle)
-        +cerrar(idPedido)
-        +reabrir(idPedido)
-        +historial() string
+        +cerrarPedido(idPedido)
+        +reabrirPedido(idPedido)
+        +mostrarHistorialDePedidos() string
     }
     class InventarioController {
         <<Controller>>
@@ -301,15 +301,15 @@ classDiagram
         #MesaModel mesaModel
         #ProductoModel productoModel
         #DetallePedidoModel detallePedidoModel
-        +index() string
-        +create() string
-        +store() RedirectResponse
-        +show(int idPedido) string
+        +mostrarResumen() string
+        +crearPedido() string
+        +validarYguardarPedido() RedirectResponse
+        +mostrarPedidoConDetalles(int idPedido) string
         +agregarDetalle(int idPedido) RedirectResponse
         +eliminarDetalle(int idPedido, int idDetalle) RedirectResponse
-        +cerrar(int idPedido) RedirectResponse
-        +reabrir(int idPedido) RedirectResponse
-        +historial() string
+        +cerrarPedido(int idPedido) RedirectResponse
+        +reabrirPedido(int idPedido) RedirectResponse
+        +mostrarHistorialDePedidos() string
         -getEstadoId(string nombre) int
     }
 

@@ -284,10 +284,10 @@ Ciclo de vida completo de los pedidos.
 
 ---
 
-#### `index`
+#### `mostrarResumen`
 
 ```php
-public function index(): string
+public function mostrarResumen(): string
 ```
 
 Lista todos los pedidos activos (sin fecha de cierre), junto con un resumen por tipo y los pedidos cerrados que aún no tienen pago registrado.
@@ -296,10 +296,10 @@ Lista todos los pedidos activos (sin fecha de cierre), junto con un resumen por 
 
 ---
 
-#### `create`
+#### `crearPedido`
 
 ```php
-public function create(): string
+public function crearPedido(): string
 ```
 
 Muestra el formulario para crear un nuevo pedido. Carga las mesas disponibles (estado `libre`) y los productos activos para seleccionar ítems.
@@ -308,22 +308,22 @@ Muestra el formulario para crear un nuevo pedido. Carga las mesas disponibles (e
 
 ---
 
-#### `store`
+#### `validarYguardarPedido`
 
 ```php
-public function store(): \CodeIgniter\HTTP\RedirectResponse
+public function validarYguardarPedido(): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Persiste un nuevo pedido junto con sus ítems iniciales dentro de una transacción. Valida que exista sesión activa, que la mesa esté libre (si aplica) y que los datos del pedido sean válidos. Al finalizar, marca la mesa como `ocupada`.
+Valida los datos del formulario y persiste el pedido con sus ítems dentro de una transacción. Verifica sesión activa, que la mesa esté libre (si aplica) y las reglas del modelo. Al finalizar, marca la mesa como `ocupada`.
 
 **Retorna:** Redirección a `/pedidos/detalles/{id}` con éxito, o al formulario con error.
 
 ---
 
-#### `show`
+#### `mostrarPedidoConDetalles`
 
 ```php
-public function show(int $idPedido): \CodeIgniter\HTTP\RedirectResponse|string
+public function mostrarPedidoConDetalles(int $idPedido): \CodeIgniter\HTTP\RedirectResponse|string
 ```
 
 Muestra el detalle de un pedido: información del encabezado, ítems actuales, productos disponibles para agregar y estado de pago.
@@ -369,10 +369,10 @@ Elimina un ítem del pedido. Valida que el pedido esté abierto y que el detalle
 
 ---
 
-#### `cerrar`
+#### `cerrarPedido`
 
 ```php
-public function cerrar(int $idPedido): \CodeIgniter\HTTP\RedirectResponse
+public function cerrarPedido(int $idPedido): \CodeIgniter\HTTP\RedirectResponse
 ```
 
 Cierra un pedido registrando la fecha y hora de cierre y actualizando su estado a `cerrado`. Si tiene mesa asociada, la cambia a `libre`.
@@ -385,10 +385,10 @@ Cierra un pedido registrando la fecha y hora de cierre y actualizando su estado 
 
 ---
 
-#### `reabrir`
+#### `reabrirPedido`
 
 ```php
-public function reabrir(int $idPedido): \CodeIgniter\HTTP\RedirectResponse
+public function reabrirPedido(int $idPedido): \CodeIgniter\HTTP\RedirectResponse
 ```
 
 Reabre un pedido cerrado, siempre que no tenga un pago registrado. Borra la fecha de cierre, cambia el estado a `abierto` y, si tiene mesa, la vuelve a `ocupada`.
@@ -401,10 +401,10 @@ Reabre un pedido cerrado, siempre que no tenga un pago registrado. Borra la fech
 
 ---
 
-#### `historial`
+#### `mostrarHistorialDePedidos`
 
 ```php
-public function historial(): string
+public function mostrarHistorialDePedidos(): string
 ```
 
 Muestra el historial de pedidos cerrados en una fecha específica (por defecto la fecha actual). La fecha se recibe como query string `?fecha=Y-m-d`.

@@ -43,15 +43,15 @@ $routes->post('inventario/actualizar/(:num)', 'InventarioController::update/$1')
 $routes->get('inventario/alertas', 'InventarioController::alertas');
 
 /** Rutas para la gestión de pedidos */
-$routes->get('pedidos', 'PedidoController::index');
-$routes->get('pedidos/crear', 'PedidoController::create');
-$routes->post('pedidos/guardar', 'PedidoController::store');
-$routes->get('pedidos/detalles/(:num)', 'PedidoController::show/$1');
-$routes->post('pedidos/cerrar/(:num)', 'PedidoController::cerrar/$1');
-$routes->post('pedidos/reabrir/(:num)', 'PedidoController::reabrir/$1');
+$routes->get('pedidos', 'PedidoController::mostrarResumen');
+$routes->get('pedidos/crear', 'PedidoController::crearPedido');
+$routes->post('pedidos/guardar', 'PedidoController::validarYguardarPedido');
+$routes->get('pedidos/detalles/(:num)', 'PedidoController::mostrarPedidoConDetalles/$1');
+$routes->post('pedidos/cerrar/(:num)', 'PedidoController::cerrarPedido/$1');
+$routes->post('pedidos/reabrir/(:num)', 'PedidoController::reabrirPedido/$1');
 $routes->post('pedidos/agregar-detalle/(:num)', 'PedidoController::agregarDetalle/$1');
 $routes->post('pedidos/eliminar-detalle/(:num)/(:num)', 'PedidoController::eliminarDetalle/$1/$2');
-$routes->get('pedidos/historial', 'PedidoController::historial');
+$routes->get('pedidos/historial', 'PedidoController::mostrarHistorialDePedidos');
 
 /** Rutas para la gestión de pagos */
 $routes->get('pagos/formulario/(:num)',  'PagoController::mostrarFormularioDePago/$1');

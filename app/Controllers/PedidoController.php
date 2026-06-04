@@ -57,10 +57,10 @@ class PedidoController extends BaseController
     /**
      * Muestra el listado de todos los pedidos activos.
      * Filtra por tipo y estado del pedido.
-     * 
+     *
      * @return string Genera el HTML para la vista de pedidos.
      */
-    public function index()
+    public function mostrarResumen()
     {
         $pedidos        = $this->pedidoModel->getPedidosActivos();
         $resumen        = $this->pedidoModel->contarPedidosPorTipo();
@@ -80,11 +80,11 @@ class PedidoController extends BaseController
 
     /**
      * Muestra el formulario para crear un nuevo pedido.
-     * Permite seleccionar tipo de pedido y mesa (si aplica).
-     * 
+     * Carga las mesas libres y los productos activos para seleccionar ítems iniciales.
+     *
      * @return string Genera el HTML para el formulario de creación.
      */
-    public function create()
+    public function crearPedido()
     {
         $mesas     = $this->mesaModel->where('estado', 'libre')->orderBy('numero', 'ASC')->findAll();
         $productos = $this->productoModel->getProductosActivos();
@@ -100,12 +100,12 @@ class PedidoController extends BaseController
     }
 
     /**
-     * Almacena un nuevo pedido en la base de datos.
-     * Valida que la mesa esté disponible si es un pedido de mesa.
-     * 
+     * Valida los datos del formulario y guarda el pedido con sus ítems en una transacción.
+     * Verifica sesión activa, mesa libre (si aplica) y reglas del modelo. Marca la mesa como ocupada al finalizar.
+     *
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a pedidos con estado de la operación.
      */
-    public function store()
+    public function validarYguardarPedido()
     {
         $idUsuario = (int) (session('id_usuario') ?? 0);
         if ($idUsuario <= 0) {
@@ -189,13 +189,12 @@ class PedidoController extends BaseController
     }
 
     /**
-     * Muestra los detalles de un pedido específico.
-     * Incluye items agregados al pedido.
-     * 
+     * Muestra el encabezado, ítems, productos disponibles y estado de pago de un pedido.
+     *
      * @param int $idPedido ID del pedido a ver.
-     * @return string Genera el HTML para la vista de detalles.
+     * @return string Genera el HTML para la vista de detalles, o redirige si no existe.
      */
-    public function show(int $idPedido)
+    public function mostrarPedidoConDetalles(int $idPedido)
     {
         // 1. Obtener detalles del pedido
         $pedido = $this->pedidoModel->getPedidoConDetalles($idPedido);
@@ -280,13 +279,13 @@ class PedidoController extends BaseController
     }
 
     /**
-     * Cierra un pedido existente.
-     * Marca la mesa como libre y registra fecha de cierre.
-     * 
+     * Cierra un pedido registrando fecha/hora de cierre y actualizando el estado a 'cerrado'.
+     * Si tiene mesa asociada, la devuelve a 'libre'.
+     *
      * @param int $idPedido ID del pedido a cerrar.
-     * @return \CodeIgniter\HTTP\RedirectResponse Redirige a pedidos con estado de la operación.
+     * @return \CodeIgniter\HTTP\RedirectResponse Redirige al detalle del pedido con éxito o error.
      */
-    public function cerrar(int $idPedido)
+    public function cerrarPedido(int $idPedido)
     {
         // 1. Verificar que el pedido existe
         $pedido = $this->pedidoModel->find($idPedido);
@@ -318,12 +317,13 @@ class PedidoController extends BaseController
     }
 
     /**
-     * Reabre un pedido cerrado siempre que no tenga pago registrado.
+     * Reabre un pedido cerrado, siempre que no tenga pago registrado.
+     * Borra la fecha de cierre, cambia el estado a 'abierto' y vuelve la mesa a 'ocupada'.
      *
      * @param int $idPedido ID del pedido a reabrir.
-     * @return \CodeIgniter\HTTP\RedirectResponse
+     * @return \CodeIgniter\HTTP\RedirectResponse Redirige al detalle del pedido con éxito o error.
      */
-    public function reabrir(int $idPedido)
+    public function reabrirPedido(int $idPedido)
     {
         $pedido = $this->pedidoModel->find($idPedido);
         if (!$pedido) {
@@ -354,12 +354,12 @@ class PedidoController extends BaseController
     }
 
     /**
-     * Muestra el historial de pedidos cerrados en una fecha específica.
-     * Utilizado para reportes y auditoría.
-     * 
-     * @return string Genera el HTML para el historial.
+     * Muestra el historial de pedidos cerrados en una fecha específica (por defecto hoy).
+     * La fecha se recibe como query string ?fecha=Y-m-d.
+     *
+     * @return string Genera el HTML para la vista de historial.
      */
-    public function historial()
+    public function mostrarHistorialDePedidos()
     {
         // Obtener fecha de consulta (por defecto hoy)
         $fecha = $this->request->getGet('fecha') ?? date('Y-m-d');
