@@ -1,0 +1,257 @@
+@startuml diagrama_arquitectura
+
+skinparam linetype ortho
+skinparam componentStyle rectangle
+skinparam defaultFontSize 12
+
+skinparam component {
+  BackgroundColor White
+  BorderColor #555555
+}
+skinparam package {
+  BackgroundColor #F8F8F8
+  BorderColor #888888
+  FontStyle bold
+}
+skinparam database {
+  BackgroundColor #E8F5E9
+  BorderColor #388E3C
+}
+skinparam rectangle {
+  BackgroundColor #EDE7F6
+  BorderColor #5E35B1
+}
+skinparam note {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+}
+skinparam arrow {
+  Color #444444
+}
+
+title BarPOS — Diagrama de Arquitectura (Capas MVC + CI4)
+
+' ─────────────────────────────────────────
+' CLIENTE
+' ─────────────────────────────────────────
+
+rectangle "Navegador Web\n(Bootstrap 5 + Font Awesome 6)" as Cliente #EDE7F6
+
+' ─────────────────────────────────────────
+' CAPA DE ENTRADA
+' ─────────────────────────────────────────
+
+package "Punto de Entrada" {
+  component "public/index.php" as Entry
+  component "Boot.php\n(CI4 Framework)" as Boot
+}
+
+' ─────────────────────────────────────────
+' CAPA DE INFRAESTRUCTURA CI4
+' ─────────────────────────────────────────
+
+package "Infraestructura CI4" {
+  component "Router\n(Config/Routes.php)" as Router
+  component "Filters\n(CSRF · HTTPS · Cache · Headers)" as Filters
+  component "Services\n(Config/Services.php)" as Services
+  component "Session\n(PHP Session)" as Session
+}
+
+' ─────────────────────────────────────────
+' CAPA DE PRESENTACIÓN — VISTAS
+' ─────────────────────────────────────────
+
+package "Vistas (app/Views/)" {
+  component "auth/\nlogin · register" as VAuth
+  component "dashboard.php" as VDash
+  component "mesas.php\nmesas_crear.php" as VMesas
+  component "productos/\nindex · crear · editar" as VProductos
+  component "categorias/\nindex · crear · editar" as VCategorias
+  component "inventario/\nindex · crear · editar · alertas" as VInventario
+  component "pedidos/\nindex · crear · detalles · historial" as VPedidos
+  component "pagos/\npagar · recibo" as VPagos
+  component "facturacion/\nindex · detalle" as VFacturacion
+}
+
+' ─────────────────────────────────────────
+' CAPA DE CONTROLADORES
+' ─────────────────────────────────────────
+
+package "Controladores (app/Controllers/)" {
+  component "BaseController" as BaseCtrl
+  component "Auth" as CAuth
+  component "DashboardController" as CDash
+  component "MesaController" as CMesa
+  component "ProductoController" as CProducto
+  component "CategoriaController" as CCategoria
+  component "InventarioController" as CInventario
+  component "PedidoController" as CPedido
+  component "PagoController" as CPago
+  component "FacturacionController" as CFacturacion
+
+  CAuth        --|> BaseCtrl
+  CDash        --|> BaseCtrl
+  CMesa        --|> BaseCtrl
+  CProducto    --|> BaseCtrl
+  CCategoria   --|> BaseCtrl
+  CInventario  --|> BaseCtrl
+  CPedido      --|> BaseCtrl
+  CPago        --|> BaseCtrl
+  CFacturacion --|> BaseCtrl
+}
+
+' ─────────────────────────────────────────
+' CAPA DE SERVICIOS + PATRÓN STRATEGY
+' ─────────────────────────────────────────
+
+package "Servicios (app/Services/)" {
+  component "PrepararPagoService" as SPrepara
+  component "RegistrarPagoService" as SRegistra
+  component "ComprobanteService" as SComprobante
+
+  package "Patrón Strategy — Pagos" {
+    component "EstrategiaPagoFactory" as Factory
+    interface "<<interface>>\nEstrategiaPagoInterface\n+ validar()\n+ procesar()" as IEstrategia
+    component "PagoEfectivo" as SEfectivo
+    component "PagoTarjeta" as STarjeta
+    component "PagoTransferencia" as STransferencia
+
+    SEfectivo      ..|> IEstrategia
+    STarjeta       ..|> IEstrategia
+    STransferencia ..|> IEstrategia
+    Factory        ..>  IEstrategia : <<crea>>
+  }
+
+  SRegistra ..> Factory : usa
+}
+
+' ─────────────────────────────────────────
+' CAPA DE MODELOS
+' ─────────────────────────────────────────
+
+package "Modelos (app/Models/)" {
+  component "UsuarioModel" as MUsuario
+  component "MesaModel" as MMesa
+  component "ProductoModel" as MProducto
+  component "CategoriaProductoModel" as MCategoria
+  component "PedidoModel" as MPedido
+  component "DetallePedidoModel" as MDetalle
+  component "StockModel" as MStock
+  component "PagoModel" as MPago
+  component "MetodoPagoModel" as MMetodo
+}
+
+' ─────────────────────────────────────────
+' BASE DE DATOS
+' ─────────────────────────────────────────
+
+database "MariaDB / MySQL\n(XAMPP — puerto 3306)\nDB: bar_pos" as DB {
+  component "usuarios · roles" as T1
+  component "mesas" as T2
+  component "productos · categorias_productos · stock" as T3
+  component "pedidos · detalle_pedidos · estados_pedido" as T4
+  component "pagos · metodos_pago" as T5
+}
+
+' ─────────────────────────────────────────
+' FLUJO DE PETICIÓN HTTP
+' ─────────────────────────────────────────
+
+Cliente   -down-> Entry     : HTTP Request
+Entry     -down-> Boot      : inicializa CI4
+Boot      -down-> Filters   : before filters
+Filters   -down-> Router    : despacha
+Router    -down-> Services  : carga servicios
+Router    -right-> BaseCtrl : resuelve controlador
+
+' ─────────────────────────────────────────
+' CONTROLADORES → VISTAS
+' ─────────────────────────────────────────
+
+CAuth        ..> VAuth       : render
+CDash        ..> VDash       : render
+CMesa        ..> VMesas      : render
+CProducto    ..> VProductos  : render
+CCategoria   ..> VCategorias : render
+CInventario  ..> VInventario : render
+CPedido      ..> VPedidos    : render
+CPago        ..> VPagos      : render
+CFacturacion ..> VFacturacion : render
+
+' ─────────────────────────────────────────
+' CONTROLADORES → MODELOS
+' ─────────────────────────────────────────
+
+CAuth        --> MUsuario
+CDash        --> MMesa
+CDash        --> MStock
+CMesa        --> MMesa
+CMesa        --> MPedido
+CProducto    --> MProducto
+CProducto    --> MCategoria
+CCategoria   --> MCategoria
+CInventario  --> MStock
+CInventario  --> MProducto
+CPedido      --> MPedido
+CPedido      --> MMesa
+CPedido      --> MProducto
+CPedido      --> MDetalle
+CPago        ..> SPrepara   : delega
+CPago        ..> SRegistra  : delega
+CPago        ..> SComprobante : delega
+CFacturacion --> MPago
+CFacturacion --> MPedido
+CFacturacion --> MDetalle
+
+' ─────────────────────────────────────────
+' SERVICIOS → MODELOS
+' ─────────────────────────────────────────
+
+SPrepara    --> MPedido
+SPrepara    --> MPago
+SPrepara    --> MMetodo
+SPrepara    --> MDetalle
+
+SRegistra   --> MPedido
+SRegistra   --> MPago
+SRegistra   --> MMetodo
+SRegistra   --> MDetalle
+
+SComprobante --> MPago
+SComprobante --> MPedido
+SComprobante --> MDetalle
+
+' ─────────────────────────────────────────
+' MODELOS → BD
+' ─────────────────────────────────────────
+
+MUsuario  --> T1
+MMesa     --> T2
+MProducto --> T3
+MCategoria --> T3
+MStock    --> T3
+MPedido   --> T4
+MDetalle  --> T4
+MPago     --> T5
+MMetodo   --> T5
+
+' ─────────────────────────────────────────
+' SESIÓN
+' ─────────────────────────────────────────
+
+CAuth ..> Session : set/destroy
+BaseCtrl ..> Session : read
+
+note right of Session
+  Claves: autenticado, id_usuario,
+  nombre, apellido, email,
+  username, id_rol, rol_nombre
+end note
+
+' ─────────────────────────────────────────
+' RESPUESTA
+' ─────────────────────────────────────────
+
+Filters -right-> Cliente : HTTP Response\n(HTML + CSS + JS)
+
+@enduml

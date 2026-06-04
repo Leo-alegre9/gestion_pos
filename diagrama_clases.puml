@@ -1,0 +1,231 @@
+@startuml diagrama_clases
+
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor White
+  BorderColor #555555
+  HeaderBackgroundColor #DDEEFF
+}
+skinparam interface {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+}
+
+title BarPOS — Diagrama de Clases
+
+' ─────────────────────────────────────────
+' USUARIO
+' ─────────────────────────────────────────
+
+class UsuarioModel {
+  - int id_usuario
+  - int id_rol
+  - String nombre
+  - String apellido
+  - int dni
+  - Date f_nacimiento
+  - String username
+  - String password_hash
+  - String email
+  - boolean activo
+  - DateTime fecha_creacion
+  --
+  + validarLogin(login: String, password: String) : ?array
+  + getUsuarioPorLogin(login: String) : ?array
+  + registrarUsuario(datos: array) : int|false
+  + emailExiste(email: String) : bool
+  + usernameExiste(username: String) : bool
+  + dniExiste(dni: int) : bool
+  + getUsuarioConRol(id: int) : ?array
+  + getUsuariosActivos() : array
+  + getUsuariosPorRol(idRol: int) : array
+  + actualizarPassword(id: int, actual: String, nueva: String) : bool
+  + setActivo(id: int, activo: bool) : bool
+  + getErrores() : array
+  + getPrimerError() : ?String
+}
+
+' ─────────────────────────────────────────
+' MESA
+' ─────────────────────────────────────────
+
+class MesaModel {
+  - int id_mesa
+  - int numero
+  - int capacidad
+  - String estado
+  --
+  + getMesasConPedidoActivo() : array
+  + contarPorEstado() : array
+}
+
+note right of MesaModel
+  estado ∈ {libre, ocupada,
+  reservada, inactiva}
+end note
+
+' ─────────────────────────────────────────
+' CATEGORÍA Y PRODUCTO
+' ─────────────────────────────────────────
+
+class CategoriaProductoModel {
+  - int id_categoria
+  - String nombre
+  - String descripcion
+  - boolean activa
+  --
+  + getAll() : array
+  + getCategoriasActivas() : array
+}
+
+class ProductoModel {
+  - int id_producto
+  - int id_categoria
+  - String nombre
+  - String descripcion
+  - decimal precio_venta
+  - boolean se_vende_en_barra
+  - boolean controla_stock
+  - boolean activo
+  --
+  + getTodos() : array
+  + getProductosActivos() : array
+  + getProductosPorCategoria(id: int, soloBar: bool) : array
+  + getProductosConControlStock() : array
+  + getProductoConCategoria(id: int) : ?array
+}
+
+class StockModel {
+  - int id_stock
+  - int id_producto
+  - decimal cantidad_disponible
+  - decimal cantidad_minima
+  - DateTime ultima_actualizacion
+  --
+  + getStockConProductos() : array
+  + getStockBajo() : array
+  + getStockPorProducto(idProducto: int) : ?array
+  + actualizarCantidad(idProducto: int, diferencia: int) : bool
+  + haySuficienteStock(idProducto: int, cantidad: int) : bool
+}
+
+' ─────────────────────────────────────────
+' PEDIDO Y DETALLE
+' ─────────────────────────────────────────
+
+class PedidoModel {
+  - int id_pedido
+  - int id_mesa
+  - int id_usuario
+  - int id_estado_pedido
+  - String tipo_pedido
+  - DateTime fecha_apertura
+  - DateTime fecha_cierre
+  - String observaciones
+  --
+  + getPedidoActivoPorMesa(idMesa: int) : ?array
+  + getPedidosActivos() : array
+  + getPedidosCerradosPorFecha(fecha: String) : array
+  + getPedidosCerradosSinPago() : array
+  + getPedidoConDetalles(idPedido: int) : ?array
+  + cerrarPedido(idPedido: int) : bool
+  + contarPedidosPorTipo() : array
+}
+
+note right of PedidoModel
+  tipo_pedido ∈ {mesa, barra, take_away}
+  fecha_cierre = NULL → pedido abierto
+end note
+
+class DetallePedidoModel {
+  - int id_detalle_pedido
+  - int id_pedido
+  - int id_producto
+  - decimal cantidad
+  - decimal precio_unitario
+  - decimal subtotal
+  - String observaciones
+  --
+  + getDetallesPorPedido(idPedido: int) : array
+  + getTotalPedido(idPedido: int) : float
+}
+
+' ─────────────────────────────────────────
+' PAGO Y MÉTODO DE PAGO
+' ─────────────────────────────────────────
+
+class MetodoPagoModel {
+  - int id_metodo_pago
+  - String nombre
+  - boolean activo
+  --
+  + getActivos() : array
+}
+
+class PagoModel {
+  - int id_pago
+  - int id_pedido
+  - int id_metodo_pago
+  - decimal monto
+  - DateTime fecha_pago
+  --
+  + getPagoPorPedido(idPedido: int) : ?array
+  + getPagoConMetodo(idPago: int) : ?array
+  + getTotalPagadoPorFecha(fecha: String) : float
+}
+
+' ─────────────────────────────────────────
+' PATRÓN STRATEGY — PAGO
+' ─────────────────────────────────────────
+
+interface EstrategiaPagoInterface {
+  + validar(monto: float) : bool
+  + procesar(monto: float) : array
+}
+
+class EstrategiaPagoFactory {
+  - {static} array mapa
+  --
+  + {static} crear(nombreMetodo: String) : ?EstrategiaPagoInterface
+}
+
+class PagoEfectivo {
+  + validar(monto: float) : bool
+  + procesar(monto: float) : array
+}
+
+class PagoTarjeta {
+  + validar(monto: float) : bool
+  + procesar(monto: float) : array
+}
+
+class PagoTransferencia {
+  + validar(monto: float) : bool
+  + procesar(monto: float) : array
+}
+
+' ─────────────────────────────────────────
+' RELACIONES DE DOMINIO
+' ─────────────────────────────────────────
+
+UsuarioModel       "1" --> "0..*" PedidoModel        : id_usuario
+MesaModel          "1" --> "0..*" PedidoModel        : id_mesa
+PedidoModel        "1" *-- "1..*" DetallePedidoModel
+ProductoModel      "1" --> "0..*" DetallePedidoModel : id_producto
+CategoriaProductoModel "1" --> "0..*" ProductoModel  : id_categoria
+ProductoModel      "1" --  "1"   StockModel          : id_producto
+MetodoPagoModel    "1" --> "0..*" PagoModel           : id_metodo_pago
+PedidoModel        "1" --> "0..1" PagoModel           : id_pedido
+
+' ─────────────────────────────────────────
+' RELACIONES — STRATEGY
+' ─────────────────────────────────────────
+
+PagoEfectivo      ..|> EstrategiaPagoInterface
+PagoTarjeta       ..|> EstrategiaPagoInterface
+PagoTransferencia ..|> EstrategiaPagoInterface
+EstrategiaPagoFactory ..> EstrategiaPagoInterface : <<crea>>
+PagoModel         ..>  EstrategiaPagoInterface    : utiliza
+
+@enduml

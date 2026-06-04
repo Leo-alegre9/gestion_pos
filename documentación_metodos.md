@@ -209,10 +209,10 @@ CRUD de mesas y cambio de estado.
 
 ---
 
-#### `index`
+#### `mostrarResumen`
 
 ```php
-public function index(): string
+public function mostrarResumen(): string
 ```
 
 Lista todas las mesas con su estado actual e indica si tienen un pedido activo asociado. También incluye un resumen de conteo por estado (`libre`, `ocupada`, `reservada`, `inactiva`).
@@ -237,10 +237,10 @@ Actualiza el estado de una mesa específica. Valida que el estado sea uno de los
 
 ---
 
-#### `create`
+#### `crearMesa`
 
 ```php
-public function create(): string
+public function crearMesa(): string
 ```
 
 Muestra el formulario para crear una nueva mesa. Calcula y pre-llena el próximo número de mesa disponible (máximo actual + 1).
@@ -249,22 +249,22 @@ Muestra el formulario para crear una nueva mesa. Calcula y pre-llena el próximo
 
 ---
 
-#### `store`
+#### `validarYalmacenar`
 
 ```php
-public function store(): \CodeIgniter\HTTP\RedirectResponse
+public function validarYalmacenar(): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Persiste una nueva mesa. El estado inicial siempre es `libre`. Valida los datos con las reglas del modelo antes de insertar.
+Valida los datos del formulario con las reglas del modelo y persiste la nueva mesa. El estado inicial siempre es `libre`.
 
 **Retorna:** Redirección a `/mesas` con mensaje de éxito o error.
 
 ---
 
-#### `delete`
+#### `eliminarMesa`
 
 ```php
-public function delete(int $idMesa): \CodeIgniter\HTTP\RedirectResponse
+public function eliminarMesa(int $idMesa): \CodeIgniter\HTTP\RedirectResponse
 ```
 
 Elimina físicamente una mesa de la base de datos. Bloquea la eliminación si la mesa tiene un pedido activo.

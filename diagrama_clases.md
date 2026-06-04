@@ -92,11 +92,11 @@ classDiagram
     }
     class MesaController {
         <<Controller>>
-        +index() string
+        +mostrarResumen() string
         +cambiarEstado(idMesa)
-        +create() string
-        +store()
-        +delete(idMesa)
+        +crearMesa() string
+        +validarYalmacenar()
+        +eliminarMesa(idMesa)
     }
     class CategoriaController {
         <<Controller>>
@@ -268,11 +268,11 @@ classDiagram
     class MesaController {
         #MesaModel mesaModel
         #PedidoModel pedidoModel
-        +index() string
+        +mostrarResumen() string
         +cambiarEstado(int idMesa) RedirectResponse
-        +create() string
-        +store() RedirectResponse
-        +delete(int idMesa) RedirectResponse
+        +crearMesa() string
+        +validarYalmacenar() RedirectResponse
+        +eliminarMesa(int idMesa) RedirectResponse
     }
 
     class CategoriaController {

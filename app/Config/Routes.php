@@ -20,11 +20,11 @@ $routes->group('auth', function($routes) {
 
 
 /** Rutas para direccionar a la gestión de las mesas */
-$routes->get('mesas', 'MesaController::index');
-$routes->get('mesas/crear', 'MesaController::create');
-$routes->post('mesas/guardar', 'MesaController::store');
+$routes->get('mesas', 'MesaController::mostrarResumen');
+$routes->get('mesas/crear', 'MesaController::crearMesa');
+$routes->post('mesas/guardar', 'MesaController::validarYalmacenar');
 $routes->post('mesas/cambiar-estado/(:num)', 'MesaController::cambiarEstado/$1');
-$routes->delete('mesas/eliminar/(:num)', 'MesaController::delete/$1');
+$routes->delete('mesas/eliminar/(:num)', 'MesaController::eliminarMesa/$1');
 
 /** Rutas para la gestión de productos */
 $routes->get('productos', 'ProductoController::index');

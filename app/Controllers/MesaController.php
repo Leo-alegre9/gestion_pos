@@ -27,10 +27,10 @@ class MesaController extends BaseController
     /**
      * Muestra el resumen y estado en tiempo real de todas las mesas.
      * Carga el estado actual (ocupada, libre) e indica mediante un LEFT JOIN si tienen pedido asociado.
-     * 
+     *
      * @return string Genera el HTML para la vista 'mesas'.
      */
-    public function index()
+    public function mostrarResumen()
     {
         // 1. Validar la existencia de pedidos para evitar cambiar a "Libre" una mesa facturando.
         $mesas = $this->mesaModel->getMesasConPedidoActivo();
@@ -83,11 +83,11 @@ class MesaController extends BaseController
 
     /**
      * Muestra el formulario para crear una nueva mesa.
-     * Valida permisos del usuario antes de mostrar el formulario.
-     * 
+     * Pre-llena el próximo número disponible (máximo actual + 1).
+     *
      * @return string Genera el HTML para el formulario de creación.
      */
-    public function create()
+    public function crearMesa()
     {
         // Obtener el siguiente número de mesa disponible
         $mesaAnterior = $this->mesaModel->selectMax('numero')->first();
@@ -103,12 +103,12 @@ class MesaController extends BaseController
     }
 
     /**
-     * Almacena una nueva mesa en la base de datos.
-     * Valida los datos ingresados y maneja errores de validación.
-     * 
+     * Valida los datos del formulario y almacena la nueva mesa en la base de datos.
+     * El estado inicial siempre es 'libre'. Usa las reglas de validación definidas en MesaModel.
+     *
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de mesas con estado de la operación.
      */
-    public function store()
+    public function validarYalmacenar()
     {
         // 1. Recopilar datos del formulario
         $dataMesa = [
@@ -137,15 +137,13 @@ class MesaController extends BaseController
     }
 
     /**
-     * Elimina una mesa de la base de datos.
-     * Incluye validaciones de seguridad:
-     * - Verifica que la mesa exista
-     * - Verifica que NO tenga pedidos activos
-     * 
+     * Elimina físicamente una mesa de la base de datos.
+     * Bloquea la eliminación si la mesa tiene un pedido activo para evitar pérdida de datos.
+     *
      * @param int $idMesa Identificador único de la mesa a eliminar.
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de mesas.
      */
-    public function delete($idMesa)
+    public function eliminarMesa($idMesa)
     {
         // 1. Verificar que la mesa existe
         $mesa = $this->mesaModel->find($idMesa);
