@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\PedidoModel;
 use App\Models\PagoModel;
+use App\Models\MetodoPagoModel;
 use App\Models\DetallePedidoModel;
+use App\Services\Pagos\EstrategiaPagoFactory;
 
 /**
  * RegistrarPagoService
@@ -21,15 +23,18 @@ class RegistrarPagoService
 {
     protected PedidoModel $pedidoModel;
     protected PagoModel $pagoModel;
+    protected MetodoPagoModel $metodoPagoModel;
     protected DetallePedidoModel $detallePedidoModel;
 
     public function __construct(
         PedidoModel $pedidoModel,
         PagoModel $pagoModel,
+        MetodoPagoModel $metodoPagoModel,
         DetallePedidoModel $detallePedidoModel
     ) {
         $this->pedidoModel        = $pedidoModel;
         $this->pagoModel          = $pagoModel;
+        $this->metodoPagoModel    = $metodoPagoModel;
         $this->detallePedidoModel = $detallePedidoModel;
     }
 
@@ -41,11 +46,13 @@ class RegistrarPagoService
      * Registra el pago de un pedido cerrado.
      *
      * Flujo:
-     *   1. Verificar que el pedido exista y esté cerrado.
-     *   2. Detectar pago duplicado.
-     *   3. Calcular el total desde los subtotales de cada detalle (server-side).
-     *   4. Validar los datos del registro contra las reglas del modelo.
-     *   5. Persistir el pago y actualizar el estado del pedido en una transacción.
+     *   1. Calcular el total desde los subtotales de cada detalle (server-side).
+     *   2. Obtener el MetodoPago desde MetodoPagoModel.
+     *   3. Obtener la estrategia correspondiente desde EstrategiaPagoFactory.
+     *   4. Ejecutar validar() sobre el monto.
+     *   5. Ejecutar procesar() con el monto.
+     *   6. Validar los datos del registro contra las reglas del modelo.
+     *   7. Persistir el pago y actualizar el estado del pedido en una transacción.
      *
      * @param int $idPedido     ID del pedido que se está pagando.
      * @param int $idMetodoPago ID del método de pago seleccionado.
@@ -59,10 +66,33 @@ class RegistrarPagoService
      */
     public function registrar(int $idPedido, int $idMetodoPago): array
     {
-        // 1. Calcular total server-side y construir los datos del registro
+        // 1. Calcular total server-side
         $detalles = $this->detallePedidoModel->getDetallesPorPedido($idPedido);
         $total    = (float) array_sum(array_column($detalles, 'subtotal'));
 
+        // 2. Obtener el método de pago desde MetodoPagoModel
+        $metodoPago = $this->metodoPagoModel->find($idMetodoPago);
+
+        // 3-5. Aplicar estrategia si existe una mapeada para este método
+        if ($metodoPago !== null) {
+            $estrategia = EstrategiaPagoFactory::crear($metodoPago['nombre']);
+
+            if ($estrategia !== null) {
+                // 4. Validar el monto según la estrategia
+                if (!$estrategia->validar($total)) {
+                    return $this->falla('El monto no es válido para el método de pago seleccionado.');
+                }
+
+                // 5. Procesar según la estrategia
+                $resultadoEstrategia = $estrategia->procesar($total);
+
+                if (!($resultadoEstrategia['ok'] ?? false)) {
+                    return $this->falla($resultadoEstrategia['error'] ?? 'Error al procesar el pago.');
+                }
+            }
+        }
+
+        // 6. Construir y validar los datos del registro (flujo original intacto)
         $registro = [
             'id_pedido'      => $idPedido,
             'id_metodo_pago' => $idMetodoPago,
@@ -70,14 +100,13 @@ class RegistrarPagoService
             'fecha_pago'     => date('Y-m-d H:i:s'),
         ];
 
-        // 2. Validación de los datos del registro
         $errorEnValidacion = $this->validarDatosRegistro($registro);
 
         if ($errorEnValidacion !== null) {
             return $errorEnValidacion;
         }
 
-        // 5. Insertar el pago y actualizar el estado del pedido en la base de datos
+        // 7. Insertar el pago y actualizar el estado del pedido en la base de datos
         return $this->persistirPago($registro, $idPedido);
     }
 

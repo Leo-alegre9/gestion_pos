@@ -48,6 +48,7 @@ class Services extends BaseService
         return new \App\Services\RegistrarPagoService(
             new \App\Models\PedidoModel(),
             new \App\Models\PagoModel(),
+            new \App\Models\MetodoPagoModel(),
             new \App\Models\DetallePedidoModel(),
         );
     }
