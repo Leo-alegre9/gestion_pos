@@ -436,10 +436,10 @@ CRUD de productos con soft-deactivation.
 
 ---
 
-#### `index`
+#### `mostrarResumen`
 
 ```php
-public function index(): string
+public function mostrarResumen(): string
 ```
 
 Lista todos los productos (activos e inactivos) con su categoría asociada.
@@ -448,10 +448,10 @@ Lista todos los productos (activos e inactivos) con su categoría asociada.
 
 ---
 
-#### `create`
+#### `crearProducto`
 
 ```php
-public function create(): string
+public function crearProducto(): string
 ```
 
 Muestra el formulario para crear un nuevo producto. Carga las categorías activas disponibles.
@@ -460,22 +460,22 @@ Muestra el formulario para crear un nuevo producto. Carga las categorías activa
 
 ---
 
-#### `store`
+#### `validarYalmacenar`
 
 ```php
-public function store(): \CodeIgniter\HTTP\RedirectResponse
+public function validarYalmacenar(): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Persiste un nuevo producto con estado `activo = 1`. Sanitiza los datos del formulario y valida con las reglas del modelo antes de insertar.
+Valida los datos del formulario y persiste el nuevo producto con `activo = 1`. Sanitiza los campos antes de insertar usando las reglas del modelo.
 
 **Retorna:** Redirección a `/productos` con éxito, o al formulario con errores.
 
 ---
 
-#### `edit`
+#### `editarProducto`
 
 ```php
-public function edit(int $idProducto): \CodeIgniter\HTTP\RedirectResponse|string
+public function editarProducto(int $idProducto): \CodeIgniter\HTTP\RedirectResponse|string
 ```
 
 Muestra el formulario de edición de un producto existente con sus datos pre-cargados.
@@ -488,13 +488,13 @@ Muestra el formulario de edición de un producto existente con sus datos pre-car
 
 ---
 
-#### `update`
+#### `actualizarProducto`
 
 ```php
-public function update(int $idProducto): \CodeIgniter\HTTP\RedirectResponse
+public function actualizarProducto(int $idProducto): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Actualiza un producto existente. Sanitiza el formulario y valida con las reglas del modelo, excluyendo el propio registro de la verificación `is_unique`.
+Valida y persiste los cambios sobre un producto existente. Excluye el propio registro de la verificación `is_unique` del modelo.
 
 | Parámetro     | Tipo  | Descripción                  |
 |---------------|-------|------------------------------|
@@ -504,13 +504,13 @@ Actualiza un producto existente. Sanitiza el formulario y valida con las reglas 
 
 ---
 
-#### `deactivate`
+#### `desactivarProducto`
 
 ```php
-public function deactivate(int $idProducto): \CodeIgniter\HTTP\RedirectResponse
+public function desactivarProducto(int $idProducto): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Desactiva un producto cambiando `activo = 0` sin eliminar el registro físicamente de la base de datos.
+Desactiva un producto (soft-delete) cambiando `activo = 0` sin eliminar el registro físicamente de la base de datos.
 
 | Parámetro     | Tipo  | Descripción                  |
 |---------------|-------|------------------------------|
@@ -527,10 +527,10 @@ CRUD de categorías de productos con soft-deactivation.
 
 ---
 
-#### `index`
+#### `mostrarResumen`
 
 ```php
-public function index(): string
+public function mostrarResumen(): string
 ```
 
 Lista todas las categorías (activas e inactivas).
@@ -539,10 +539,10 @@ Lista todas las categorías (activas e inactivas).
 
 ---
 
-#### `create`
+#### `crearCategoria`
 
 ```php
-public function create(): string
+public function crearCategoria(): string
 ```
 
 Muestra el formulario para crear una nueva categoría.
@@ -551,22 +551,22 @@ Muestra el formulario para crear una nueva categoría.
 
 ---
 
-#### `store`
+#### `validarYguardar`
 
 ```php
-public function store(): \CodeIgniter\HTTP\RedirectResponse
+public function validarYguardar(): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Persiste una nueva categoría con estado `activa = 1`. Valida con las reglas del modelo antes de insertar.
+Valida los datos del formulario y persiste la nueva categoría con `activa = 1`. Usa las reglas del modelo antes de insertar.
 
 **Retorna:** Redirección a `/categorias` con éxito, o al formulario con errores.
 
 ---
 
-#### `edit`
+#### `editarCategoria`
 
 ```php
-public function edit(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse|string
+public function editarCategoria(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse|string
 ```
 
 Muestra el formulario de edición de una categoría existente con sus datos pre-cargados.
@@ -579,13 +579,13 @@ Muestra el formulario de edición de una categoría existente con sus datos pre-
 
 ---
 
-#### `update`
+#### `actualizarCategoria`
 
 ```php
-public function update(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse
+public function actualizarCategoria(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Actualiza una categoría existente. Sanitiza los datos del formulario y valida con las reglas del modelo.
+Valida y persiste los cambios sobre una categoría existente.
 
 | Parámetro      | Tipo  | Descripción                    |
 |----------------|-------|--------------------------------|
@@ -595,13 +595,13 @@ Actualiza una categoría existente. Sanitiza los datos del formulario y valida c
 
 ---
 
-#### `deactivate`
+#### `desactivarCategoria`
 
 ```php
-public function deactivate(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse
+public function desactivarCategoria(int $idCategoria): \CodeIgniter\HTTP\RedirectResponse
 ```
 
-Desactiva una categoría cambiando `activa = 0` sin eliminar el registro físicamente.
+Desactiva una categoría (soft-delete) cambiando `activa = 0` sin eliminar el registro físicamente.
 
 | Parámetro      | Tipo  | Descripción                    |
 |----------------|-------|--------------------------------|

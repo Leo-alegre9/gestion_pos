@@ -27,12 +27,12 @@ $routes->post('mesas/cambiar-estado/(:num)', 'MesaController::cambiarEstado/$1')
 $routes->delete('mesas/eliminar/(:num)', 'MesaController::eliminarMesa/$1');
 
 /** Rutas para la gestión de productos */
-$routes->get('productos', 'ProductoController::index');
-$routes->get('productos/crear', 'ProductoController::create');
-$routes->post('productos/guardar', 'ProductoController::store');
-$routes->get('productos/editar/(:num)', 'ProductoController::edit/$1');
-$routes->post('productos/actualizar/(:num)', 'ProductoController::update/$1');
-$routes->post('productos/desactivar/(:num)', 'ProductoController::deactivate/$1');
+$routes->get('productos', 'ProductoController::mostrarResumen');
+$routes->get('productos/crear', 'ProductoController::crearProducto');
+$routes->post('productos/guardar', 'ProductoController::validarYalmacenar');
+$routes->get('productos/editar/(:num)', 'ProductoController::editarProducto/$1');
+$routes->post('productos/actualizar/(:num)', 'ProductoController::actualizarProducto/$1');
+$routes->post('productos/desactivar/(:num)', 'ProductoController::desactivarProducto/$1');
 
 /** Rutas para la gestión del inventario */
 $routes->get('inventario', 'InventarioController::index');
@@ -63,11 +63,11 @@ $routes->get('facturacion', 'FacturacionController::index');
 $routes->get('facturacion/detalle/(:num)', 'FacturacionController::detalle/$1');
 
 /** Rutas para la gestión de categorías */
-$routes->get('categorias', 'CategoriaController::index');
-$routes->get('categorias/crear', 'CategoriaController::create');
-$routes->post('categorias/guardar', 'CategoriaController::store');
-$routes->get('categorias/editar/(:num)', 'CategoriaController::edit/$1');
-$routes->post('categorias/actualizar/(:num)', 'CategoriaController::update/$1');
-$routes->post('categorias/desactivar/(:num)', 'CategoriaController::deactivate/$1');
+$routes->get('categorias', 'CategoriaController::mostrarResumen');
+$routes->get('categorias/crear', 'CategoriaController::crearCategoria');
+$routes->post('categorias/guardar', 'CategoriaController::validarYguardar');
+$routes->get('categorias/editar/(:num)', 'CategoriaController::editarCategoria/$1');
+$routes->post('categorias/actualizar/(:num)', 'CategoriaController::actualizarCategoria/$1');
+$routes->post('categorias/desactivar/(:num)', 'CategoriaController::desactivarCategoria/$1');
 
 

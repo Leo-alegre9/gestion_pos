@@ -23,7 +23,7 @@ class CategoriaController extends BaseController
      *
      * @return string Genera el HTML para la vista de categorías.
      */
-    public function index()
+    public function mostrarResumen()
     {
         // Obtener todas las categorías activas
         $categorias = $this->categoriaModel->getAll();
@@ -43,7 +43,7 @@ class CategoriaController extends BaseController
      *
      * @return string Genera el HTML para el formulario de creación.
      */
-    public function create()
+    public function crearCategoria()
     {
         return view('categorias/crear', [
             'user' => [
@@ -54,12 +54,12 @@ class CategoriaController extends BaseController
     }
 
     /**
-     * Almacena una nueva categoría en la base de datos.
-     * Valida los datos ingresados y maneja errores de validación.
+     * Valida los datos del formulario y almacena la nueva categoría con activa = 1.
+     * Usa las reglas de validación definidas en CategoriaProductoModel.
      *
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de categorías con estado de la operación.
      */
-    public function store()
+    public function validarYguardar()
     {
         // 1. Recopilar datos del formulario con sanitización
         $dataCategoria = [
@@ -87,12 +87,12 @@ class CategoriaController extends BaseController
     }
 
     /**
-     * Muestra el formulario para editar una categoría existente.
+     * Muestra el formulario de edición con los datos de la categoría pre-cargados.
      *
      * @param int $idCategoria ID de la categoría a editar.
-     * @return string Genera el HTML para el formulario de edición.
+     * @return string Genera el HTML para el formulario de edición, o redirige si no existe.
      */
-    public function edit(int $idCategoria)
+    public function editarCategoria(int $idCategoria)
     {
         // 1. Verificar que la categoría existe
         $categoria = $this->categoriaModel->find($idCategoria);
@@ -110,12 +110,12 @@ class CategoriaController extends BaseController
     }
 
     /**
-     * Actualiza una categoría existente en la base de datos.
+     * Valida y persiste los cambios sobre una categoría existente.
      *
      * @param int $idCategoria ID de la categoría a actualizar.
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de categorías con estado de la operación.
      */
-    public function update(int $idCategoria)
+    public function actualizarCategoria(int $idCategoria)
     {
         // 1. Verificar que la categoría existe
         $categoria = $this->categoriaModel->find($idCategoria);
@@ -149,13 +149,13 @@ class CategoriaController extends BaseController
     }
 
     /**
-     * Desactiva una categoría (no la elimina físicamente).
-     * Las categorías desactivadas no aparecen en vistas normales.
+     * Desactiva una categoría (soft-delete) cambiando activa = 0, sin eliminarla físicamente.
+     * Las categorías desactivadas no aparecen en el selector de productos.
      *
      * @param int $idCategoria ID de la categoría a desactivar.
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de categorías.
      */
-    public function deactivate(int $idCategoria)
+    public function desactivarCategoria(int $idCategoria)
     {
         // 1. Verificar que la categoría existe
         $categoria = $this->categoriaModel->find($idCategoria);

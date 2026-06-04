@@ -100,21 +100,21 @@ classDiagram
     }
     class CategoriaController {
         <<Controller>>
-        +index() string
-        +create() string
-        +store()
-        +edit(idCategoria) string
-        +update(idCategoria)
-        +deactivate(idCategoria)
+        +mostrarResumen() string
+        +crearCategoria() string
+        +validarYguardar()
+        +editarCategoria(idCategoria) string
+        +actualizarCategoria(idCategoria)
+        +desactivarCategoria(idCategoria)
     }
     class ProductoController {
         <<Controller>>
-        +index() string
-        +create() string
-        +store()
-        +edit(idProducto) string
-        +update(idProducto)
-        +deactivate(idProducto)
+        +mostrarResumen() string
+        +crearProducto() string
+        +validarYalmacenar()
+        +editarProducto(idProducto) string
+        +actualizarProducto(idProducto)
+        +desactivarProducto(idProducto)
     }
     class PedidoController {
         <<Controller>>
@@ -277,23 +277,23 @@ classDiagram
 
     class CategoriaController {
         #CategoriaProductoModel categoriaModel
-        +index() string
-        +create() string
-        +store() RedirectResponse
-        +edit(int idCategoria) string
-        +update(int idCategoria) RedirectResponse
-        +deactivate(int idCategoria) RedirectResponse
+        +mostrarResumen() string
+        +crearCategoria() string
+        +validarYguardar() RedirectResponse
+        +editarCategoria(int idCategoria) string
+        +actualizarCategoria(int idCategoria) RedirectResponse
+        +desactivarCategoria(int idCategoria) RedirectResponse
     }
 
     class ProductoController {
         #ProductoModel productoModel
         #CategoriaProductoModel categoriaModel
-        +index() string
-        +create() string
-        +store() RedirectResponse
-        +edit(int idProducto) string
-        +update(int idProducto) RedirectResponse
-        +deactivate(int idProducto) RedirectResponse
+        +mostrarResumen() string
+        +crearProducto() string
+        +validarYalmacenar() RedirectResponse
+        +editarProducto(int idProducto) string
+        +actualizarProducto(int idProducto) RedirectResponse
+        +desactivarProducto(int idProducto) RedirectResponse
     }
 
     class PedidoController {

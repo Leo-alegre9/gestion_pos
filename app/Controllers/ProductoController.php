@@ -23,10 +23,10 @@ class ProductoController extends BaseController
     /**
      * Muestra el listado de todos los productos activos.
      * Incluye información de categoría y disponibilidad.
-     * 
+     *
      * @return string Genera el HTML para la vista de productos.
      */
-    public function index()
+    public function mostrarResumen()
     {
         $productos = $this->productoModel->getTodos();
 
@@ -42,10 +42,11 @@ class ProductoController extends BaseController
 
     /**
      * Muestra el formulario para crear un nuevo producto.
-     * 
+     * Carga las categorías activas disponibles para el selector.
+     *
      * @return string Genera el HTML para el formulario de creación.
      */
-    public function create()
+    public function crearProducto()
     {
         $categorias = $this->categoriaModel->getCategoriasActivas();
 
@@ -59,12 +60,12 @@ class ProductoController extends BaseController
     }
 
     /**
-     * Almacena un nuevo producto en la base de datos.
-     * Valida los datos ingresados y maneja errores de validación.
-     * 
+     * Valida los datos del formulario y almacena el nuevo producto con activo = 1.
+     * Sanitiza los campos antes de insertar usando las reglas del modelo.
+     *
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de productos con estado de la operación.
      */
-    public function store()
+    public function validarYalmacenar()
     {
         $descripcion = trim((string) $this->request->getPost('descripcion'));
 
@@ -98,12 +99,12 @@ class ProductoController extends BaseController
     }
 
     /**
-     * Muestra el formulario para editar un producto existente.
-     * 
+     * Muestra el formulario de edición con los datos del producto pre-cargados.
+     *
      * @param int $idProducto ID del producto a editar.
-     * @return string Genera el HTML para el formulario de edición.
+     * @return string Genera el HTML para el formulario de edición, o redirige si no existe.
      */
-    public function edit(int $idProducto)
+    public function editarProducto(int $idProducto)
     {
         // 1. Verificar que el producto existe
         $producto = $this->productoModel->getProductoConCategoria($idProducto);
@@ -124,12 +125,13 @@ class ProductoController extends BaseController
     }
 
     /**
-     * Actualiza un producto existente en la base de datos.
-     * 
+     * Valida y persiste los cambios sobre un producto existente.
+     * Excluye el propio registro de la verificación is_unique del modelo.
+     *
      * @param int $idProducto ID del producto a actualizar.
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de productos con estado de la operación.
      */
-    public function update(int $idProducto)
+    public function actualizarProducto(int $idProducto)
     {
         // 1. Verificar que el producto existe
         $producto = $this->productoModel->find($idProducto);
@@ -169,13 +171,13 @@ class ProductoController extends BaseController
     }
 
     /**
-     * Desactiva un producto (no lo elimina físicamente).
-     * Los productos desactivados no aparecen en vistas normales.
-     * 
+     * Desactiva un producto (soft-delete) cambiando activo = 0, sin eliminarlo físicamente.
+     * Los productos desactivados no aparecen en vistas normales ni en la selección de pedidos.
+     *
      * @param int $idProducto ID del producto a desactivar.
      * @return \CodeIgniter\HTTP\RedirectResponse Redirige a la lista de productos.
      */
-    public function deactivate(int $idProducto)
+    public function desactivarProducto(int $idProducto)
     {
         // 1. Verificar que el producto existe
         $producto = $this->productoModel->find($idProducto);
