@@ -21,8 +21,6 @@ class DashboardController extends BaseController
 
         // ── Mesas ────────────────────────────────────────────────────────
         $mesas         = $mesaModel->orderBy('numero', 'ASC')->findAll();
-        $mesasOcupadas = 0;
-
         // Totales de pedidos abiertos por mesa
         $mesaAmountsRaw = $db->table('pedidos p')
             ->select('p.id_mesa, COALESCE(SUM(dp.subtotal), 0) as total', false)
@@ -39,9 +37,6 @@ class DashboardController extends BaseController
 
         $tables = [];
         foreach ($mesas as $mesa) {
-            if ($mesa['estado'] === 'ocupada') {
-                $mesasOcupadas++;
-            }
             $tables[] = [
                 'id_mesa' => $mesa['id_mesa'],
                 'number'  => $mesa['numero'],
@@ -50,22 +45,8 @@ class DashboardController extends BaseController
             ];
         }
 
-        // ── Ventas hoy (suma de pagos registrados hoy) ───────────────────
-        $ventasHoyRow = $db->table('pagos')
-            ->selectSum('monto')
-            ->where("DATE(fecha_pago) = '$today'", null, false)
-            ->get()->getRowArray();
-        $ventasHoy = (float)($ventasHoyRow['monto'] ?? 0);
-
-        // ── Pedidos abiertos hoy ─────────────────────────────────────────
-        $pedidosHoy = (int)$db->table('pedidos')
-            ->where("DATE(fecha_apertura) = '$today'", null, false)
-            ->countAllResults();
-
-        // ── Alertas de stock ─────────────────────────────────────────────
-        $alertasStock = (int)$db->table('stock')
-            ->where('cantidad_disponible < cantidad_minima', null, false)
-            ->countAllResults();
+        // ── KPIs del día (procedimiento almacenado) ──────────────────────
+        $kpis = $db->query('CALL sp_resumen_dashboard(?)', [$today])->getRowArray();
 
         // ── Top 5 productos más vendidos hoy ────────────────────────────
         $topProductsRaw = $db->table('detalle_pedidos dp')
@@ -164,11 +145,11 @@ class DashboardController extends BaseController
 
         // ── Stats consolidados ───────────────────────────────────────────
         $stats = [
-            'ventas_hoy'     => $ventasHoy,
-            'pedidos_hoy'    => $pedidosHoy,
-            'mesas_ocupadas' => $mesasOcupadas,
-            'mesas_total'    => count($mesas),
-            'alertas_stock'  => $alertasStock,
+            'ventas_hoy'     => (float) $kpis['ventas_hoy'],
+            'pedidos_hoy'    => (int)   $kpis['pedidos_hoy'],
+            'mesas_ocupadas' => (int)   $kpis['mesas_ocupadas'],
+            'mesas_total'    => (int)   $kpis['mesas_total'],
+            'alertas_stock'  => (int)   $kpis['alertas_stock'],
         ];
 
         return view('dashboard', [

@@ -287,29 +287,17 @@ class PedidoController extends BaseController
      */
     public function cerrarPedido(int $idPedido)
     {
-        // 1. Verificar que el pedido existe
-        $pedido = $this->pedidoModel->find($idPedido);
-        if (!$pedido) {
-            return redirect()->back()->with('error', 'El pedido no existe.');
-        }
+        $db     = \Config\Database::connect();
+        $result = $db->query('CALL sp_cerrar_pedido(?)', [$idPedido])->getRowArray();
 
-        // 2. Verificar que no esté ya cerrado
-        if ($pedido['fecha_cierre'] !== null) {
-            return redirect()->back()->with('error', 'El pedido ya ha sido cerrado.');
-        }
-
-        // 3. Cerrar el pedido y actualizar su estado
-        $idEstadoCerrado = $this->getEstadoId('cerrado');
-        if (!$this->pedidoModel->update($idPedido, [
-            'fecha_cierre'     => date('Y-m-d H:i:s'),
-            'id_estado_pedido' => $idEstadoCerrado,
-        ])) {
-            return redirect()->back()->with('error', 'Error al cerrar el pedido.');
-        }
-
-        // 4. Si tiene mesa asociada, marcarla como libre
-        if ($pedido['id_mesa']) {
-            $this->mesaModel->update($pedido['id_mesa'], ['estado' => 'libre']);
+        if ($result['resultado'] !== 'OK') {
+            $msg = match($result['resultado']) {
+                'ERROR:no_existe'   => 'El pedido no existe.',
+                'ERROR:ya_cerrado'  => 'El pedido ya ha sido cerrado.',
+                'ERROR:transaccion' => 'Error al cerrar el pedido. Intentá nuevamente.',
+                default             => 'Error al cerrar el pedido.',
+            };
+            return redirect()->back()->with('error', $msg);
         }
 
         return redirect()->to('/pedidos/detalles/' . $idPedido)
