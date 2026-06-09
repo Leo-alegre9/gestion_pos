@@ -66,29 +66,48 @@ class RegistrarPagoService
      */
     public function registrar(int $idPedido, int $idMetodoPago): array
     {
+        // 0. Verificar que el pedido exista y esté cerrado
+        $pedido = $this->pedidoModel->find($idPedido);
+        if (!$pedido || $pedido['fecha_cierre'] === null) {
+            return $this->falla('El pedido no es válido para registrar pago.');
+        }
+
+        // 0b. Detectar pago previo para evitar duplicados
+        $pagoExistente = $this->pagoModel->getPagoPorPedido($idPedido);
+        if ($pagoExistente) {
+            return [
+                'ok'             => false,
+                'idPago'         => null,
+                'error'          => null,
+                'errors'         => null,
+                'pagoExistenteId'=> (int) $pagoExistente['id_pago'],
+            ];
+        }
+
         // 1. Calcular total server-side
         $detalles = $this->detallePedidoModel->getDetallesPorPedido($idPedido);
         $total    = (float) array_sum(array_column($detalles, 'subtotal'));
 
-        // 2. Obtener el método de pago desde MetodoPagoModel
+        // 2. Verificar que el método de pago exista
         $metodoPago = $this->metodoPagoModel->find($idMetodoPago);
+        if ($metodoPago === null) {
+            return $this->falla('El método de pago no es válido.');
+        }
 
         // 3-5. Aplicar estrategia si existe una mapeada para este método
-        if ($metodoPago !== null) {
-            $estrategia = EstrategiaPagoFactory::crear($metodoPago['nombre']);
+        $estrategia = EstrategiaPagoFactory::crear($metodoPago['nombre']);
 
-            if ($estrategia !== null) {
-                // 4. Validar el monto según la estrategia
-                if (!$estrategia->validar($total)) {
-                    return $this->falla('El monto no es válido para el método de pago seleccionado.');
-                }
+        if ($estrategia !== null) {
+            // 4. Validar el monto según la estrategia
+            if (!$estrategia->validar($total)) {
+                return $this->falla('El monto no es válido para el método de pago seleccionado.');
+            }
 
-                // 5. Procesar según la estrategia
-                $resultadoEstrategia = $estrategia->procesar($total);
+            // 5. Procesar según la estrategia
+            $resultadoEstrategia = $estrategia->procesar($total);
 
-                if (!($resultadoEstrategia['ok'] ?? false)) {
-                    return $this->falla($resultadoEstrategia['error'] ?? 'Error al procesar el pago.');
-                }
+            if (!($resultadoEstrategia['ok'] ?? false)) {
+                return $this->falla($resultadoEstrategia['error'] ?? 'Error al procesar el pago.');
             }
         }
 
@@ -141,7 +160,7 @@ class RegistrarPagoService
      * Inserta el pago en `pagos` y actualiza el estado del pedido
      * dentro de una única transacción de base de datos.
      */
-    private function persistirPago(array $registro, int $idPedido): array
+    protected function persistirPago(array $registro, int $idPedido): array
     {
         $idEstadoPagado = $this->obtenerOCrearEstado('pagado');
 

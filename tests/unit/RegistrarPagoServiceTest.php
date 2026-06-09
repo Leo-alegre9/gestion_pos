@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\DetallePedidoModel;
+use App\Models\MetodoPagoModel;
 use App\Models\PagoModel;
 use App\Models\PedidoModel;
 use App\Services\RegistrarPagoService;
@@ -24,12 +25,20 @@ class RegistrarPagoServiceTest extends CIUnitTestCase
     private function makeService(
         ?PedidoModel $pedidoModel = null,
         ?PagoModel $pagoModel = null,
-        ?DetallePedidoModel $detallePedidoModel = null
+        ?DetallePedidoModel $detallePedidoModel = null,
+        ?MetodoPagoModel $metodoPagoModel = null
     ): RegistrarPagoService {
+        $defaultDetalle = $this->createMock(DetallePedidoModel::class);
+        $defaultDetalle->method('getDetallesPorPedido')->willReturn([]);
+
+        $defaultMetodo = $this->createMock(MetodoPagoModel::class);
+        $defaultMetodo->method('find')->willReturn(['id_metodo_pago' => 1, 'nombre' => 'Efectivo']);
+
         return new RegistrarPagoService(
-            $pedidoModel        ?? $this->createMock(PedidoModel::class),
-            $pagoModel          ?? $this->createMock(PagoModel::class),
-            $detallePedidoModel ?? $this->createMock(DetallePedidoModel::class),
+            $pedidoModel     ?? $this->createMock(PedidoModel::class),
+            $pagoModel       ?? $this->createMock(PagoModel::class),
+            $metodoPagoModel ?? $defaultMetodo,
+            $detallePedidoModel ?? $defaultDetalle,
         );
     }
 
@@ -106,7 +115,13 @@ class RegistrarPagoServiceTest extends CIUnitTestCase
             ['subtotal' => 10.0],
         ]);
 
-        $resultado = $this->makeService($pedidoModel, $pagoModel, $detallePedidoModel)->registrar(2, 0);
+        // Método de pago con nombre inválido para que la fábrica no encuentre estrategia
+        // y el flujo llegue directamente a validarDatosRegistro()
+        $metodoPagoModel = $this->createMock(MetodoPagoModel::class);
+        $metodoPagoModel->method('find')->willReturn(['id_metodo_pago' => 1, 'nombre' => 'sin_estrategia']);
+
+        $resultado = $this->makeService($pedidoModel, $pagoModel, $detallePedidoModel, $metodoPagoModel)
+            ->registrar(2, 1);
 
         $this->assertFalse($resultado['ok']);
         $this->assertArrayHasKey('id_metodo_pago', $resultado['errors']);
