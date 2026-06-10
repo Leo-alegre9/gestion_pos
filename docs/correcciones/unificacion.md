@@ -197,7 +197,7 @@ $routes->group('auth', function($routes) {
 
 **Causa:** La validación ocurría DESPUÉS de procesar los datos (cuando password ya no existía).
 
-**Solución:** Validar ANTES de procesar. Ver: [CORRECCION_REGISTRO_NO_GUARDABA.md](CORRECCION_REGISTRO_NO_GUARDABA.md)
+**Solución:** Validar ANTES de procesar. Ver: [registro_no_guardaba.md](registro_no_guardaba.md)
 
 **Cambios:**
 - ✅ Validar datos originales (mientras existen todos los campos)

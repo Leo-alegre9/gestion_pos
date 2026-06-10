@@ -6,7 +6,12 @@
       "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/index.php\")",
       "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/detalles.php\")",
       "Bash(php -l \"E:/gestion_pos/app/Views/pedidos/historial.php\")",
-      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Kernel\\\\Documents\\\\a.ingenieria2\\\\tests\\\\\" -Recurse | Select-Object -ExpandProperty FullName | ForEach-Object { $_ -replace [regex]::Escape\\(\"c:\\\\Users\\\\Kernel\\\\Documents\\\\a.ingenieria2\\\\tests\\\\\"\\), \"\" } | Sort-Object)"
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\Kernel\\\\Documents\\\\a.ingenieria2\\\\tests\\\\\" -Recurse | Select-Object -ExpandProperty FullName | ForEach-Object { $_ -replace [regex]::Escape\\(\"c:\\\\Users\\\\Kernel\\\\Documents\\\\a.ingenieria2\\\\tests\\\\\"\\), \"\" } | Sort-Object)",
+      "Bash(git mv *)",
+      "Bash(git -C \"c:/Users/Kernel/Documents/a.ingenieria2\" mv \"ARQUITECTURA.md\" \"docs/autenticacion/arquitectura_autenticacion.md\")",
+      "Bash(git -C \"c:/Users/Kernel/Documents/a.ingenieria2\" ls-files)",
+      "Bash(git -C \"c:/Users/Kernel/Documents/a.ingenieria2\" mv ARQUITECTURA.md docs/autenticacion/arquitectura_autenticacion.md)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
